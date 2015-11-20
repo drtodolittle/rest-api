@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="de.drtodolittle.RouteTest" time="63.131" tests="1" errors="1" skipped="0" failures="0">
+  <properties>
+    <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
+    <property name="sun.boot.library.path" value="C:\Program Files\Java\jdk1.8.0_60\jre\bin"/>
+    <property name="java.vm.version" value="25.60-b23"/>
+    <property name="java.vm.vendor" value="Oracle Corporation"/>
+    <property name="maven.multiModuleProjectDirectory" value="D:\Users\guenther_d\Privat\projekte\rest-api"/>
+    <property name="java.vendor.url" value="http://java.oracle.com/"/>
+    <property name="path.separator" value=";"/>
+    <property name="guice.disable.misplaced.annotation.check" value="true"/>
+    <property name="java.vm.name" value="Java HotSpot(TM) 64-Bit Server VM"/>
+    <property name="file.encoding.pkg" value="sun.io"/>
+    <property name="user.script" value=""/>
+    <property name="user.country" value="DE"/>
+    <property name="sun.java.launcher" value="SUN_STANDARD"/>
+    <property name="sun.os.patch.level" value="Service Pack 1"/>
+    <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
+    <property name="user.dir" value="D:\Users\guenther_d\Privat\projekte\rest-api"/>
+    <property name="java.runtime.version" value="1.8.0_60-b27"/>
+    <property name="java.awt.graphicsenv" value="sun.awt.Win32GraphicsEnvironment"/>
+    <property name="java.endorsed.dirs" value="C:\Program Files\Java\jdk1.8.0_60\jre\lib\endorsed"/>
+    <property name="os.arch" value="amd64"/>
+    <property name="java.io.tmpdir" value="D:\Users\GUENTH~1\AppData\Local\Temp\"/>
+    <property name="line.separator" value="&#10;"/>
+    <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
+    <property name="user.variant" value=""/>
+    <property name="os.name" value="Windows 7"/>
+    <property name="classworlds.conf" value="D:\Users\guenther_d\Programme\apache-maven-3.3.3\bin\..\bin\m2.conf"/>
+    <property name="sun.jnu.encoding" value="Cp1252"/>
+    <property name="java.library.path" value="C:\Program Files\Java\jdk1.8.0_60\bin;C:\Windows\Sun\Java\bin;C:\Windows\system32;C:\Windows;C:\ProgramData\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files\nodejs\;C:\Program Files (x86)\Enterprise Vault\EVClient\x64\;C:\PROGRA~2\Groovy\GROOVY~1.9\bin;C:\HashiCorp\Vagrant\bin;C:\Program Files (x86)\Skype\Phone\;d:\Ruby193\bin;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files (x86)\Bitvise Tunnelier;C:\Program Files\Oracle\VirtualBox;C:\Program Files\TortoiseSVN\bin;D:\Users\guenther_d\Programme\apache-maven-3.3.3\bin;C:\Program Files (x86)\Calibre2\;D:\HashiCorp\Vagrant\bin;C:\Program Files (x86)\Git\cmd;C:\Program Files (x86)\Git\bin;C:\Program Files\nodejs\;C:\Program Files (x86)\Java\jdk1.7.0_03\bin;D:\Users\guenther_d\Programme\grails-2.0.3\bin;D:\Users\guenther_d\Programme\apache-ant-1.8.4\bin;C:\opt\IBM\Lotus\Notes;C:\opt\IBM\Lotus\Notes\jvm\bin;D:\Users\guenther_d\Programme\pax-construct-1.4\bin;C:\Chocolatey\bin;D:\Users\guenther_d\AppData\Roaming\npm;C:\Program Files (x86)\Groovy\Groovy-2.3.7\bin;D:\Users\guenther_d\.babun;C:\Program Files (x86)\KDiff3;C:\Program Files\Docker Toolbox;D:\Users\guenther_d\AppData\Local\atom\bin;."/>
+    <property name="java.specification.name" value="Java Platform API Specification"/>
+    <property name="java.class.version" value="52.0"/>
+    <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
+    <property name="os.version" value="6.1"/>
+    <property name="user.home" value="D:\Users\guenther_d"/>
+    <property name="user.timezone" value="Europe/Berlin"/>
+    <property name="java.awt.printerjob" value="sun.awt.windows.WPrinterJob"/>
+    <property name="java.specification.version" value="1.8"/>
+    <property name="file.encoding" value="Cp1252"/>
+    <property name="user.name" value="Guenther_D"/>
+    <property name="java.class.path" value="D:\Users\guenther_d\Programme\apache-maven-3.3.3\bin\..\boot\plexus-classworlds-2.5.2.jar"/>
+    <property name="java.vm.specification.version" value="1.8"/>
+    <property name="sun.arch.data.model" value="64"/>
+    <property name="java.home" value="C:\Program Files\Java\jdk1.8.0_60\jre"/>
+    <property name="sun.java.command" value="org.codehaus.plexus.classworlds.launcher.Launcher"/>
+    <property name="java.specification.vendor" value="Oracle Corporation"/>
+    <property name="user.language" value="de"/>
+    <property name="awt.toolkit" value="sun.awt.windows.WToolkit"/>
+    <property name="java.vm.info" value="mixed mode"/>
+    <property name="java.version" value="1.8.0_60"/>
+    <property name="java.ext.dirs" value="C:\Program Files\Java\jdk1.8.0_60\jre\lib\ext;C:\Windows\Sun\Java\lib\ext"/>
+    <property name="sun.boot.class.path" value="C:\Program Files\Java\jdk1.8.0_60\jre\lib\resources.jar;C:\Program Files\Java\jdk1.8.0_60\jre\lib\rt.jar;C:\Program Files\Java\jdk1.8.0_60\jre\lib\sunrsasign.jar;C:\Program Files\Java\jdk1.8.0_60\jre\lib\jsse.jar;C:\Program Files\Java\jdk1.8.0_60\jre\lib\jce.jar;C:\Program Files\Java\jdk1.8.0_60\jre\lib\charsets.jar;C:\Program Files\Java\jdk1.8.0_60\jre\lib\jfr.jar;C:\Program Files\Java\jdk1.8.0_60\jre\classes"/>
+    <property name="sun.stderr.encoding" value="cp850"/>
+    <property name="java.vendor" value="Oracle Corporation"/>
+    <property name="maven.home" value="D:\Users\guenther_d\Programme\apache-maven-3.3.3\bin\.."/>
+    <property name="file.separator" value="\"/>
+    <property name="java.vendor.url.bug" value="http://bugreport.sun.com/bugreport/"/>
+    <property name="sun.cpu.endian" value="little"/>
+    <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
+    <property name="sun.stdout.encoding" value="cp850"/>
+    <property name="sun.desktop" value="windows"/>
+    <property name="sun.cpu.isalist" value="amd64"/>
+  </properties>
+  <testcase name="testRoute" classname="de.drtodolittle.RouteTest" time="63.131">
+    <error message="Gave up waiting for service (objectClass=org.apache.camel.CamelContext)" type="java.lang.RuntimeException">java.lang.RuntimeException: Gave up waiting for service (objectClass=org.apache.camel.CamelContext)
+	at org.apache.camel.test.blueprint.CamelBlueprintHelper.getOsgiService(CamelBlueprintHelper.java:265)
+	at org.apache.camel.test.blueprint.CamelBlueprintHelper.getOsgiService(CamelBlueprintHelper.java:226)
+	at org.apache.camel.test.blueprint.CamelBlueprintTestSupport.createCamelContext(CamelBlueprintTestSupport.java:441)
+	at org.apache.camel.test.junit4.CamelTestSupport.doSetUp(CamelTestSupport.java:270)
+	at org.apache.camel.test.junit4.CamelTestSupport.setUp(CamelTestSupport.java:238)
+	at org.apache.camel.test.blueprint.CamelBlueprintTestSupport.setUp(CamelBlueprintTestSupport.java:213)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:497)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:47)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:44)
+	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:24)
+	at org.junit.internal.runners.statements.RunAfters.evaluate(RunAfters.java:27)
+	at org.junit.rules.TestWatcher$1.evaluate(TestWatcher.java:55)
+	at org.junit.rules.TestWatcher$1.evaluate(TestWatcher.java:55)
+	at org.junit.rules.RunRules.evaluate(RunRules.java:20)
+	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:271)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:70)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:50)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:238)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:63)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:236)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:53)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:229)
+	at org.junit.internal.runners.statements.RunAfters.evaluate(RunAfters.java:27)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:309)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.execute(JUnit4Provider.java:264)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.executeTestSet(JUnit4Provider.java:153)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.invoke(JUnit4Provider.java:124)
+	at org.apache.maven.surefire.booter.ForkedBooter.invokeProviderInSameClassLoader(ForkedBooter.java:200)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:153)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:103)
+</error>
+    <system-out><![CDATA[[                          main] CamelBlueprintHelper           INFO  Using Blueprint XML file: /D:/Users/guenther_d/Privat/projekte/rest-api/target/classes/OSGI-INF/blueprint/blueprint.xml
+[                      Thread-0] RawBuilder                     INFO  Copy thread finished.
+[                          main] Activator                      INFO  Camel activator starting
+[                          main] Activator                      INFO  Camel activator started
+[         Blueprint Extender: 1] BlueprintContainerImpl         INFO  Bundle rest-api/1.0.0.SNAPSHOT is waiting for namespace handlers [http://camel.apache.org/schema/blueprint]
+[         Blueprint Extender: 2] BlueprintContainerImpl         INFO  Bundle rest-api/1.0.0.SNAPSHOT is waiting for dependencies [(objectClass=org.osgi.service.http.HttpService)]
+[         Blueprint Extender: 3] BlueprintContainerImpl         INFO  Bundle RouteTest/1.0.0 is waiting for dependencies [(objectClass=org.osgi.service.http.HttpService)]
+[                          main] RouteTest                      INFO  ********************************************************************************
+[                          main] RouteTest                      INFO  Testing: testRoute(de.drtodolittle.RouteTest)
+[                          main] RouteTest                      INFO  ********************************************************************************
+[                          main] CamelBlueprintHelper           WARN  Test bundle headers: Bundle-ManifestVersion=2, Bundle-Name=System Bundle, Bundle-SymbolicName=org.apache.felix.connect, Bundle-Vendor=Apache Software Foundation, Bundle-Version=0.0.0
+[                          main] CamelBlueprintHelper           WARN  ServiceReference: [org.apache.aries.blueprint.NamespaceHandler], bundle: org.apache.aries.blueprint.core [15], symbolicName: org.apache.aries.blueprint.core
+[                          main] CamelBlueprintHelper           WARN  ServiceReference: [org.apache.aries.blueprint.NamespaceHandler], bundle: org.apache.camel.camel-blueprint [5], symbolicName: org.apache.camel.camel-blueprint
+[                          main] CamelBlueprintHelper           WARN  ServiceReference: [org.apache.camel.spi.TypeConverterLoader], bundle: org.apache.camel.camel-core [2], symbolicName: org.apache.camel.camel-core
+[                          main] CamelBlueprintHelper           WARN  ServiceReference: [org.apache.camel.spi.DataFormatResolver], bundle: org.apache.camel.camel-core [2], symbolicName: org.apache.camel.camel-core
+[                          main] CamelBlueprintHelper           WARN  ServiceReference: [org.osgi.service.cm.ConfigurationListener, org.apache.felix.fileinstall.ArtifactListener, org.apache.felix.fileinstall.ArtifactInstaller], bundle: org.apache.felix.fileinstall [29], symbolicName: org.apache.felix.fileinstall
+[                          main] CamelBlueprintHelper           WARN  ServiceReference: [org.apache.aries.quiesce.participant.QuiesceParticipant], bundle: org.apache.aries.blueprint.core [15], symbolicName: org.apache.aries.blueprint.core
+[                          main] CamelBlueprintHelper           WARN  ServiceReference: [org.apache.aries.blueprint.NamespaceHandler], bundle: org.apache.aries.blueprint.core [15], symbolicName: org.apache.aries.blueprint.core
+[                          main] CamelBlueprintHelper           WARN  ServiceReference: [org.apache.aries.blueprint.NamespaceHandler], bundle: org.apache.aries.blueprint.core [15], symbolicName: org.apache.aries.blueprint.core
+[                          main] CamelBlueprintHelper           WARN  ServiceReference: [org.apache.aries.blueprint.services.ParserService], bundle: org.apache.aries.blueprint.core [15], symbolicName: org.apache.aries.blueprint.core
+[                          main] CamelBlueprintHelper           WARN  ServiceReference: [org.apache.aries.blueprint.services.BlueprintExtenderService], bundle: org.apache.aries.blueprint.core [15], symbolicName: org.apache.aries.blueprint.core
+[                          main] CamelBlueprintHelper           WARN  ServiceReference: [org.apache.aries.blueprint.NamespaceHandler], bundle: org.apache.aries.blueprint.core [15], symbolicName: org.apache.aries.blueprint.core
+[                          main] CamelBlueprintHelper           WARN  ServiceReference: [org.apache.aries.blueprint.NamespaceHandler], bundle: org.apache.aries.blueprint.core [15], symbolicName: org.apache.aries.blueprint.core
+[                          main] CamelBlueprintHelper           WARN  ServiceReference: [org.osgi.service.blueprint.container.BlueprintContainer], bundle: org.apache.aries.blueprint.cm [17], symbolicName: org.apache.aries.blueprint.cm
+[                          main] CamelBlueprintHelper           WARN  ServiceReference: [org.apache.aries.proxy.ProxyManager], bundle: org.apache.aries.proxy.impl [13], symbolicName: org.apache.aries.proxy.impl
+[                          main] CamelBlueprintHelper           WARN  ServiceReference: [org.apache.aries.blueprint.NamespaceHandler], bundle: org.apache.aries.blueprint.cm [17], symbolicName: org.apache.aries.blueprint.cm
+[                          main] CamelBlueprintHelper           WARN  ServiceReference: [org.apache.aries.blueprint.NamespaceHandler], bundle: org.apache.aries.blueprint.cm [17], symbolicName: org.apache.aries.blueprint.cm
+[                          main] CamelBlueprintHelper           WARN  ServiceReference: [org.apache.aries.blueprint.NamespaceHandler], bundle: org.apache.aries.blueprint.cm [17], symbolicName: org.apache.aries.blueprint.cm
+[                          main] CamelBlueprintHelper           WARN  ServiceReference: [org.osgi.service.cm.ConfigurationAdmin], bundle: org.apache.felix.configadmin [28], symbolicName: org.apache.felix.configadmin
+[                          main] CamelBlueprintHelper           WARN  ServiceReference: [org.osgi.framework.hooks.bundle.EventHook], bundle: org.apache.aries.blueprint.core [15], symbolicName: org.apache.aries.blueprint.core
+[                          main] CamelBlueprintHelper           WARN  ServiceReference: [org.apache.aries.blueprint.NamespaceHandler], bundle: org.apache.aries.blueprint.core [15], symbolicName: org.apache.aries.blueprint.core
+[                          main] CamelBlueprintHelper           WARN  ServiceReference: [org.apache.camel.spi.ComponentResolver], bundle: org.apache.camel.camel-core [2], symbolicName: org.apache.camel.camel-core
+[                          main] CamelBlueprintHelper           WARN  ServiceReference: [org.apache.aries.blueprint.NamespaceHandler], bundle: org.apache.aries.blueprint.cm [17], symbolicName: org.apache.aries.blueprint.cm
+[                          main] CamelBlueprintHelper           WARN  ServiceReference: [org.osgi.service.startlevel.StartLevel], bundle: org.apache.felix.connect [0], symbolicName: org.apache.felix.connect
+[                          main] CamelBlueprintHelper           WARN  ServiceReference: [org.apache.felix.cm.PersistenceManager], bundle: org.apache.felix.configadmin [28], symbolicName: org.apache.felix.configadmin
+[                          main] CamelBlueprintHelper           WARN  ServiceReference: [org.osgi.service.blueprint.container.BlueprintContainer], bundle: org.apache.camel.camel-blueprint [5], symbolicName: org.apache.camel.camel-blueprint
+[                          main] CamelBlueprintHelper           WARN  ServiceReference: [org.apache.camel.spi.LanguageResolver], bundle: org.apache.camel.camel-core [2], symbolicName: org.apache.camel.camel-core
+[                          main] CamelBlueprintHelper           WARN  ServiceReference: [org.osgi.service.cm.ManagedServiceFactory], bundle: org.apache.felix.fileinstall [29], symbolicName: org.apache.felix.fileinstall
+[                          main] CamelBlueprintHelper           WARN  ServiceReference: [org.osgi.service.url.URLStreamHandlerService], bundle: org.apache.felix.fileinstall [29], symbolicName: org.apache.felix.fileinstall
+[                          main] CamelBlueprintHelper           WARN  ServiceReference: [org.apache.aries.blueprint.NamespaceHandler], bundle: org.apache.aries.blueprint.core [15], symbolicName: org.apache.aries.blueprint.core
+[                          main] CamelBlueprintHelper           WARN  ServiceReference: [org.osgi.service.blueprint.container.BlueprintContainer], bundle: org.apache.aries.blueprint.core [15], symbolicName: org.apache.aries.blueprint.core
+[                          main] CamelBlueprintHelper           WARN  ServiceReference: [org.osgi.service.packageadmin.PackageAdmin], bundle: org.apache.felix.connect [0], symbolicName: org.apache.felix.connect
+[                          main] RouteTest                      INFO  ********************************************************************************
+[                          main] RouteTest                      INFO  Testing done: testRoute(de.drtodolittle.RouteTest)
+[                          main] RouteTest                      INFO  Took: 1 minute (63031 millis)
+[                          main] RouteTest                      INFO  ********************************************************************************
+[                          main] BlueprintExtender              INFO  Destroying BlueprintContainer for bundle RouteTest/1.0.0
+[                          main] BlueprintExtender              INFO  Destroying BlueprintContainer for bundle org.apache.aries.blueprint.cm/1.0.6
+[                          main] BlueprintExtender              INFO  Destroying BlueprintContainer for bundle rest-api/1.0.0.SNAPSHOT
+[                          main] BlueprintExtender              INFO  Destroying BlueprintContainer for bundle org.apache.camel.camel-blueprint/2.16.0
+[                          main] BlueprintExtender              INFO  Destroying BlueprintContainer for bundle org.apache.aries.blueprint.core/1.4.4
+[                          main] Activator                      INFO  Camel activator stopping
+[                          main] Activator                      INFO  Camel activator stopped
+[                          main] CamelBlueprintHelper           INFO  Deleting work directory target/bundles/1448057102740
+]]></system-out>
+  </testcase>
+</testsuite>

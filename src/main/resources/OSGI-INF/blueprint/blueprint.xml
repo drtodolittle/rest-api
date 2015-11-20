@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+       http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd
+       http://camel.apache.org/schema/blueprint http://camel.apache.org/schema/blueprint/camel-blueprint.xsd">
+
+ <!-- to setup camel servlet with OSGi HttpService -->
+  <reference id="httpService" interface="org.osgi.service.http.HttpService"/>
+
+  <bean class="org.apache.camel.component.servlet.osgi.OsgiServletRegisterer" destroy-method="unregister" init-method="register">
+    <property name="alias" value="/rest-api"/>
+    <property name="httpService" ref="httpService"/>
+    <property name="servlet" ref="camelServlet"/>
+  </bean>
+  
+  <bean class="org.apache.camel.component.servlet.CamelHttpTransportServlet" id="camelServlet"/>
+
+ 
+    <camelContext xmlns="http://camel.apache.org/schema/blueprint">
+		<restConfiguration bindingMode="off" component="servlet" contextPath="/rest-api" enableCORS="true"/>	  
+
+		<rest path="/ping">
+			<get uri="/" >
+				<to uri="direct:ping" />
+			</get>
+		</rest>
+
+		<rest path="/tasks">
+			<get uri="/" produces="application/json">
+				<to uri="direct:gettasks" />
+			</get>
+			<post uri="/" produces="application/json">
+				<to uri="direct:createtask" />
+			</post>
+			<get uri="/{id}" produces="application/json">
+				<to uri="direct:gettask" />
+			</get>
+			<delete uri="/{id}">
+				<to uri="direct:deletetask" />
+			</delete>
+			<put uri="/{id}" produces="application/json">
+				<to uri="direct:updatetask" />
+			</put>
+		</rest>
+
+	  <route>
+		<from uri="direct:ping" />
+		<transform>
+			<constant>Hello, I'm Dr ToDo Little</constant>
+		</transform>
+	  </route>
+	  
+	  <route>
+		<from uri="direct:gettask" />
+		<to uri="velocity:templates/gettask.vm" />
+	  </route>
+	  
+	  <route>
+		<from uri="direct:gettasks" />
+		<to uri="velocity:templates/gettasks.vm" />
+	  </route>
+
+	  <route>
+		<from uri="direct:deletetask" />
+		<setHeader headerName="Exchange.HTTP_RESPONSE_CODE"><constant>204</constant></setHeader>
+		<to uri="mock:templates/deletetask" />
+	  </route>
+	  
+	  <route>
+		<from uri="direct:updatetask" />
+		<to uri="velocity:templates/updatetask.vm" />
+	  </route>
+	  
+	  <route>
+		<from uri="direct:createtask" />
+		<to uri="velocity:templates/createtask.vm" />
+	  </route>
+    </camelContext>
+
+</blueprint>

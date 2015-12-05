@@ -47,7 +47,7 @@
 	  <route>
 		<from uri="direct:ping" />
 		<transform>
-			<constant>Hello, I'm Dr ToDo Little</constant>
+			<constant>Hello, I'm Dr ToDo Little!</constant>
 		</transform>
 	  </route>
 	  

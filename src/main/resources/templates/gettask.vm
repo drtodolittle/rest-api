@@ -1,5 +1,7 @@
 {
 	"id": "${headers.id}",
-	"subject": "Mein erster Task",
-	"completed": false
+	"topic": "Mein erster Task",
+	"done": false,
+	"createdate": "01.01.2014",
+	"donedate": ""
 }

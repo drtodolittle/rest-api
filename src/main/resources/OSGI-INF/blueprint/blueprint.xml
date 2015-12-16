@@ -9,7 +9,7 @@
   <reference id="httpService" interface="org.osgi.service.http.HttpService"/>
 
   <bean class="org.apache.camel.component.servlet.osgi.OsgiServletRegisterer" destroy-method="unregister" init-method="register">
-    <property name="alias" value="/rest-api"/>
+    <property name="alias" value="/api"/>
     <property name="httpService" ref="httpService"/>
     <property name="servlet" ref="camelServlet"/>
   </bean>
@@ -18,7 +18,7 @@
 
  
     <camelContext xmlns="http://camel.apache.org/schema/blueprint">
-		<restConfiguration bindingMode="off" component="servlet" contextPath="/rest-api" enableCORS="true"/>	  
+		<restConfiguration bindingMode="off" component="servlet" contextPath="/api" enableCORS="true"/>	  
 
 		<rest path="/ping">
 			<get uri="/" >
@@ -26,7 +26,7 @@
 			</get>
 		</rest>
 
-		<rest path="/tasks">
+		<rest path="/todos">
 			<get uri="/" produces="application/json">
 				<to uri="direct:gettasks" />
 			</get>
@@ -37,11 +37,14 @@
 				<to uri="direct:gettask" />
 			</get>
 			<delete uri="/{id}">
-				<to uri="direct:deletetask" />
+				<to uri="direct:noanswer" />
 			</delete>
 			<put uri="/{id}" produces="application/json">
 				<to uri="direct:updatetask" />
 			</put>
+			<get uri="/{id}/done" produces="application/json">
+				<to uri="direct:noanswer" />
+			</get>
 		</rest>
 
 	  <route>
@@ -57,19 +60,18 @@
 	  </route>
 	  
 	  <route>
-		<from uri="direct:gettasks" />
-		<to uri="velocity:templates/gettasks.vm" />
+		<from uri="direct:updatetask" />
+		<to uri="velocity:templates/updatetask.vm" />
 	  </route>
 
 	  <route>
-		<from uri="direct:deletetask" />
-		<setHeader headerName="Exchange.HTTP_RESPONSE_CODE"><constant>204</constant></setHeader>
-		<to uri="mock:templates/deletetask" />
+		<from uri="direct:gettasks" />
+		<to uri="velocity:templates/gettasks.vm" />
 	  </route>
 	  
 	  <route>
-		<from uri="direct:updatetask" />
-		<to uri="velocity:templates/updatetask.vm" />
+		<from uri="direct:noanswer" />
+		<setHeader headerName="Exchange.HTTP_RESPONSE_CODE"><constant>204</constant></setHeader>
 	  </route>
 	  
 	  <route>

@@ -1,0 +1,20 @@
+{
+	"startedby" : {
+		"type" : "String",
+		"value" : "dirk",
+		"valueInfo" : {}
+
+	},
+	"topic" : {
+		"type" : "String",
+		"value" : "Mein erstes ToDo",
+		"valueInfo" : {}
+
+	},
+	"done" : {
+		"type" : "Boolean",
+		"value" : false,
+		"valueInfo" : {}
+
+	}
+}

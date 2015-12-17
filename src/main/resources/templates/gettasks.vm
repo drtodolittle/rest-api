@@ -1,13 +1,13 @@
 [
 	{
-		"id": "1",
+		"id": "${headers.processInstanceIds[0]}",
 		"topic": "Mein erster Task",
 		"done": false,
 		"createdate": "01.01.2014",
 		"donedate": ""
 	},
 	{
-		"id": "2",
+		"id": "${headers.processInstanceIds[1]}",
 		"topic": "Mein zweiter Task",
 		"done": false,
 		"createdate": "01.01.2014",

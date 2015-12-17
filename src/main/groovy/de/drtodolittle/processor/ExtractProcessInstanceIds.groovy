@@ -17,7 +17,7 @@ import org.apache.camel.Processor
 class ExtractProcessInstanceIds implements Processor {
 	
      public void process(Exchange exchange) {
-        dev input = exchange.getIn().getBody()
+        def input = exchange.getIn().getBody()
         def jsonSlurper = new JsonSlurper()
         def tasks = jsonSlurper.parseText(input)
         def processIds = []

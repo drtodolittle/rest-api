@@ -19,7 +19,7 @@ class ExtractProcessInstanceIds implements Processor {
      public void process(Exchange exchange) {
         def input = exchange.getIn().getBody()
         def jsonSlurper = new JsonSlurper()
-        def tasks = jsonSlurper.parseText(input)
+        def tasks = jsonSlurper.parse(input)
         def processIds = []
 
         tasks.each({processIds.add(it.id)})

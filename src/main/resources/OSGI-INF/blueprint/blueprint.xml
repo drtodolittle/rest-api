@@ -85,6 +85,7 @@
                         
                     ]]>
                     </groovy>
+                </setHeader>
 		<to uri="velocity:templates/gettasks.vm" />
 	  </route>
 	  

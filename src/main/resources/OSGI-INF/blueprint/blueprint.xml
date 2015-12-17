@@ -67,7 +67,7 @@
 	  <route>
 		<from uri="direct:gettasks" />
                 <setHeader headerName="Exchange.HTTP_URI">
-                    <constant>http4://localhost:10080/engine-rest/process-instance?businessKey=dirk</constant>
+                    <constant>http://localhost:10080/engine-rest/process-instance?businessKey=dirk</constant>
                 </setHeader>
 		<to uri="http4://localhost:10080/engine-rest/process-instance?businessKey=dirk" />
                 <setHeader headerName="processInstanceIds">

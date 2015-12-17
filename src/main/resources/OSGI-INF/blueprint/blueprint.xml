@@ -16,6 +16,7 @@
   
   <bean class="org.apache.camel.component.servlet.CamelHttpTransportServlet" id="camelServlet"/>
 
+  <bean class="de.drtodolittle.processor.ExtractProcessInstanceIds" id="extractProcessIdsProcessor" />
  
     <camelContext xmlns="http://camel.apache.org/schema/blueprint">
 		<restConfiguration bindingMode="off" component="servlet" contextPath="/api" enableCORS="true"/>	  
@@ -76,26 +77,8 @@
                     <constant>businessKey=dirk</constant>
                 </setHeader>
 		<to uri="http4://localhost:10080/engine-rest/process-instance?businessKey=dirk" />
-                <setHeader headerName="processInstanceIds">
-                    <groovy><![CDATA[ 
-                        import groovy.json.JsonSlurper
-
-                        //def input = request.getBody()
-                        def input = new File("../../../../sampledata/getProcessInstances.json").getText()
-                        def jsonSlurper = new JsonSlurper()
-                        def tasks = jsonSlurper.parseText(input)
-                        def processIds = []
-
-                        tasks.each({ 
-                                processIds.add(it.id)
-                        println it.id })
-
-                        processIds
-                        
-                    ]]>
-                    </groovy>
-                </setHeader>
-		<to uri="velocity:templates/gettasks.vm" />
+                <process ref="extractProcessIdsProcessor" />
+                <to uri="velocity:templates/gettasks.vm" />
 	  </route>
 	  
 	  <route>

@@ -61,6 +61,11 @@
       <version>2.16.0</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <artifactId>groovy-all</artifactId>
+      <groupId>org.codehaus.groovy</groupId>
+      <version>2.4.5</version>
+    </dependency>
   </dependencies>
 
   <build>
@@ -117,6 +122,25 @@
         <configuration>
           <useBlueprint>true</useBlueprint>
         </configuration>
+      </plugin>
+            <plugin>
+        <groupId>org.codehaus.gmavenplus</groupId>
+        <artifactId>gmavenplus-plugin</artifactId>
+        <version>1.5</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>addSources</goal>
+              <goal>addTestSources</goal>
+              <goal>generateStubs</goal>
+              <goal>compile</goal>
+              <goal>testGenerateStubs</goal>
+              <goal>testCompile</goal>
+              <goal>removeStubs</goal>
+              <goal>removeTestStubs</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
 
     </plugins>

@@ -20,7 +20,7 @@ class ProcessInstanceVariables implements AggregationStrategy {
         if (oldExchange == null) {
             return newExchange
         }
-        oldExchange.body = oldExchange.body + newExchange.body
+        oldExchange.in.body = oldExchange.in.body + newExchange.in.body
         return oldExchange
     }
 }

@@ -18,9 +18,10 @@ class ProcessInstanceVariables implements AggregationStrategy {
 	
     public Exchange aggregate(Exchange oldExchange, Exchange newExchange) {
         if (oldExchange == null) {
+            newExchange.in.body = newExchange.in.body.getText()
             return newExchange
         }
-        oldExchange.in.body = oldExchange.in.body + newExchange.in.body
+        oldExchange.in.body = oldExchange.in.body + newExchange.in.body.getrText()
         return oldExchange
     }
 }

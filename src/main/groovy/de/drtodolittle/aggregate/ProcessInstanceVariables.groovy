@@ -17,6 +17,9 @@ import org.apache.camel.processor.aggregate.AggregationStrategy
 class ProcessInstanceVariables implements AggregationStrategy {
 	
     public Exchange aggregate(Exchange oldExchange, Exchange newExchange) {
+        if (oldExchange == null) {
+            return newExchange
+        }
         oldExchange.body = oldExchange.body + newExchange.body
         return oldExchange
     }

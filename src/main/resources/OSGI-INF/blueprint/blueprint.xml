@@ -17,6 +17,8 @@
   <bean class="org.apache.camel.component.servlet.CamelHttpTransportServlet" id="camelServlet"/>
 
   <bean class="de.drtodolittle.processor.ExtractProcessInstanceIds" id="extractProcessIdsProcessor" />
+  
+  <bean class="de.drtodolittle.aggregate.ProcessInstanceVariables" id="processInstanceVariablesAggregationStrategy" />
  
     <camelContext xmlns="http://camel.apache.org/schema/blueprint">
 		<restConfiguration bindingMode="off" component="servlet" contextPath="/api" enableCORS="true"/>	  
@@ -72,12 +74,12 @@
                 <setHeader headerName="Exchange.HTTP_QUERY"><constant>businessKey=dirk</constant></setHeader>
 		<to uri="http4://localhost:10080/engine-rest/process-instance?businessKey=dirk" />
                 <process ref="extractProcessIdsProcessor" />
-                <split>
+                <split strategyRef="processInstanceVariablesAggregationStrategy">
                     <simple>${header.processIds}</simple>
                     <to uri="direct:gettaskvariables" />
                 </split>
                 
-                <!--<to uri="velocity:templates/gettasks.vm" />-->
+               
 	  </route>
 
           <route>

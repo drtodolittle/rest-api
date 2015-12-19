@@ -28,10 +28,10 @@ class GenerateToDoJSON implements Processor {
         
         vars.each({
                 if (it.name.equals("topic")) {
-                    todo.put("topic", it.value)
+                    todo.put("topic", it.value.clone())
                 }
                 else if (it.name.equals("done")) {
-                    todo.put("done", it.value)
+                    todo.put("done", it.value.clone())
                 }
             })
         exchange.in.body = JsonOutput.toJson(todo)

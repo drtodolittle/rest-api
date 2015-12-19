@@ -67,18 +67,24 @@
 
 	  <route>
 		<from uri="direct:gettasks" />
-                <setHeader headerName="Exchange.HTTP_URI">
-                    <constant>http://localhost:10080</constant>
-                </setHeader>
-                <setHeader headerName="Exchange.HTTP_PATH">
-                    <constant>/engine-rest/process-instance</constant>
-                </setHeader>
-                <setHeader headerName="Exchange.HTTP_QUERY">
-                    <constant>businessKey=dirk</constant>
-                </setHeader>
+                <setHeader headerName="Exchange.HTTP_URI"><constant>http://localhost:10080/engine-rest</constant></setHeader>
+                <setHeader headerName="Exchange.HTTP_PATH"><constant>/process-instance</constant></setHeader>
+                <setHeader headerName="Exchange.HTTP_QUERY"><constant>businessKey=dirk</constant></setHeader>
 		<to uri="http4://localhost:10080/engine-rest/process-instance?businessKey=dirk" />
                 <process ref="extractProcessIdsProcessor" />
-                <to uri="velocity:templates/gettasks.vm" />
+                <split>
+                    <simple>${header.processIds}</simple>
+                    <to uri="direct:gettaskvariables" />
+                </split>
+                
+                <!--<to uri="velocity:templates/gettasks.vm" />-->
+	  </route>
+
+          <route>
+		<from uri="direct:gettaskvariables" />
+                <setHeader headerName="Exchange.HTTP_PATH"><constant>/variable-instance</constant></setHeader>
+                <setHeader headerName="Exchange.HTTP_QUERY"><simple>processInstanceIdIn=${header.processIds[exchange.CamelSplitIndex]</simple></setHeader>
+		<to uri="http4://localhost:10080/engine-rest/process-instance?businessKey=dirk" />
 	  </route>
 	  
 	  <route>

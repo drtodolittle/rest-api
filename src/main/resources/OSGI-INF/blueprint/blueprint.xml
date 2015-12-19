@@ -77,10 +77,12 @@
                 <setHeader headerName="Exchange.HTTP_QUERY"><constant>businessKey=dirk</constant></setHeader>
 		<to uri="http4://localhost:10080/engine-rest/process-instance?businessKey=dirk" />
                 <process ref="extractProcessIdsProcessor" />
+                <to uri="log:drtodolittle?showBody=true" />
                 <split strategyRef="processInstanceVariablesAggregationStrategy">
                     <simple>${header.processIds}</simple>
                     <to uri="direct:gettaskvariables" />
                 </split>
+                <to uri="log:drtodolittle?showBody=true" />
                 <setBody><simple>[${body}]</simple></setBody>
 	  </route>
 
@@ -88,9 +90,11 @@
 		<from uri="direct:gettaskvariables" />
                 <setHeader headerName="Exchange.HTTP_PATH"><constant>/variable-instance</constant></setHeader>
                 <setHeader headerName="Exchange.HTTP_QUERY"><groovy>processInstanceIdIn=request.headers.processIds[exchange.properties.CamelSplitIndex]</groovy></setHeader>
+                <to uri="log:drtodolittle?showBody=true" />
 		<to uri="http4://localhost:10080/engine-rest/process-instance?businessKey=dirk" />
+                <to uri="log:drtodolittle?showBody=true" />
                 <process ref="GenerateToDoJSONProcessor" />
-                <to uri="log:drtodolittle?showAll=true" />
+                <to uri="log:drtodolittle?showBody=true" />
 	  </route>
 	  
 	  <route>

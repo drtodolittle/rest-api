@@ -81,7 +81,7 @@
                     <simple>${header.processIds}</simple>
                     <to uri="direct:gettaskvariables" />
                 </split>
-                <setBody>[${body}]</setBody>
+                <setBody><simple>[${body}]</simple></setBody>
 	  </route>
 
           <route>

@@ -85,6 +85,7 @@
                 <setHeader headerName="Exchange.HTTP_PATH"><constant>/variable-instance</constant></setHeader>
                 <setHeader headerName="Exchange.HTTP_QUERY"><groovy>processInstanceIdIn=request.headers.processIds[exchange.properties.CamelSplitIndex]</groovy></setHeader>
 		<to uri="http4://localhost:10080/engine-rest/process-instance?businessKey=dirk" />
+                <to uri="log:drtodolittle?showAll=true" />
 	  </route>
 	  
 	  <route>

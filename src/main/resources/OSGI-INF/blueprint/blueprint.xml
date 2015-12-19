@@ -18,7 +18,10 @@
 
   <bean class="de.drtodolittle.processor.ExtractProcessInstanceIds" id="extractProcessIdsProcessor" />
   
+  <bean class="de.drtodolittle.processor.GenerateToDoJSON" id="GenerateToDoJSONProcessor" />
+
   <bean class="de.drtodolittle.aggregate.ProcessInstanceVariables" id="processInstanceVariablesAggregationStrategy" />
+  
  
     <camelContext xmlns="http://camel.apache.org/schema/blueprint">
 		<restConfiguration bindingMode="off" component="servlet" contextPath="/api" enableCORS="true"/>	  
@@ -78,8 +81,7 @@
                     <simple>${header.processIds}</simple>
                     <to uri="direct:gettaskvariables" />
                 </split>
-                
-               
+                <setBody>[${body}]</setBody>
 	  </route>
 
           <route>
@@ -87,6 +89,7 @@
                 <setHeader headerName="Exchange.HTTP_PATH"><constant>/variable-instance</constant></setHeader>
                 <setHeader headerName="Exchange.HTTP_QUERY"><groovy>processInstanceIdIn=request.headers.processIds[exchange.properties.CamelSplitIndex]</groovy></setHeader>
 		<to uri="http4://localhost:10080/engine-rest/process-instance?businessKey=dirk" />
+                <process ref="GenerateToDoJSONProcessor" />
                 <to uri="log:drtodolittle?showAll=true" />
 	  </route>
 	  

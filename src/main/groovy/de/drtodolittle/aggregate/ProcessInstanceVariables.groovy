@@ -21,7 +21,7 @@ class ProcessInstanceVariables implements AggregationStrategy {
             newExchange.in.body = newExchange.in.body.getText()
             return newExchange
         }
-        oldExchange.in.body = oldExchange.in.body + newExchange.in.body.getrText()
+        oldExchange.in.body = oldExchange.in.body + newExchange.in.body.getText()
         return oldExchange
     }
 }

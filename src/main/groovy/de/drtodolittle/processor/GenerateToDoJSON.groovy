@@ -7,6 +7,7 @@
 package de.drtodolittle.processor
 
 import groovy.json.JsonSlurper
+import groovy.json.JsonOutput
 import org.apache.camel.Exchange
 import org.apache.camel.Processor
 

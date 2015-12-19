@@ -83,7 +83,7 @@
           <route>
 		<from uri="direct:gettaskvariables" />
                 <setHeader headerName="Exchange.HTTP_PATH"><constant>/variable-instance</constant></setHeader>
-                <setHeader headerName="Exchange.HTTP_QUERY"><groovy>processInstanceIdIn=request.headers.processIds[exchange.propertties.CamelSplitIndex]</groovy></setHeader>
+                <setHeader headerName="Exchange.HTTP_QUERY"><groovy>processInstanceIdIn=request.headers.processIds[exchange.properties.CamelSplitIndex]</groovy></setHeader>
 		<to uri="http4://localhost:10080/engine-rest/process-instance?businessKey=dirk" />
 	  </route>
 	  

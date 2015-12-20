@@ -7,6 +7,7 @@
 package de.drtodolittle.processor
 
 import groovy.json.JsonBuilder
+import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
 import org.apache.camel.Exchange
 import org.apache.camel.Processor
@@ -20,12 +21,17 @@ class GenerateCreateProcessJSON implements Processor{
     
     
     public void process(Exchange exchange) {
-        def input = "test1"
+       def input = exchange.in.body
+       def jsonSlurper = new JsonSlurper()
+       def vars = jsonSlurper.parse(input)
+         
+        
+        
         def builder = new groovy.json.JsonBuilder()
         builder {
             variables {
                 topic {
-                    value input
+                    value vars.topic
                     type 'String'
 		}
 		done {

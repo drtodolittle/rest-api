@@ -47,7 +47,7 @@
 				<to uri="direct:updatetodo" />
 			</put>
 			<get uri="/{id}/done" produces="application/json">
-				<to uri="direct:noanswer" />
+				<to uri="direct:tododone" />
 			</get>
 		</rest>
 
@@ -114,17 +114,20 @@
 		<to uri="http4://localhost:10080/engine-rest/" />
 		<setHeader headerName="Exchange.HTTP_RESPONSE_CODE"><constant>204</constant></setHeader>
 	  </route>
+          <route>
+		<from uri="direct:tododone" />
+                <to uri="log:tododone?showHeaders=true" />
+		<setHeader headerName="Exchange.HTTP_RESPONSE_CODE"><constant>204</constant></setHeader>
+	  </route>
 	  
 	  <route>
 		<from uri="direct:createtodo" />
                 <process ref="generateCreateProcessJSONProcessor" />
-                <to uri="log:createtask?showStreams=true&amp;showHeaders=true" />
                 <setHeader headerName="Exchange.HTTP_URI"><constant>http://localhost:10080/engine-rest</constant></setHeader>
                 <setHeader headerName="Exchange.HTTP_PATH"><constant>/process-definition/key/DrToDoLittle/start</constant></setHeader>
                 <setHeader headerName="CamelHttpMethod"><constant>POST</constant></setHeader>
                 <setHeader headerName="Exchange.CONTENT_TYPE"><constant>application/json</constant></setHeader>
 		<to uri="http4://localhost:10080/engine-rest/process-instance?businessKey=dirk" />
-                
 	  </route>
     </camelContext>
 

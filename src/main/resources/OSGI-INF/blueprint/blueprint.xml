@@ -103,20 +103,22 @@
           <route>
 		<from uri="direct:deletetodo" />
                 <setHeader headerName="Exchange.HTTP_URI"><constant>http://localhost:10080/engine-rest</constant></setHeader>
-                <setHeader headerName="Exchange.HTTP_PATH">
-                    <groovy>
-                        def origPath = request.getHeader(exchange.HTTP_PATH)
-                        def id = origPath.substring(origPath.lastIndexOf("/"))
-                        return "/process-instance" + id
-                    </groovy>
-                </setHeader>
+                <setHeader headerName="Exchange.HTTP_PATH"><simple>/process-instance/${header.id}</simple></setHeader>
                 <setHeader headerName="CamelHttpMethod"><constant>DELETE</constant></setHeader>
 		<to uri="http4://localhost:10080/engine-rest/" />
 		<setHeader headerName="Exchange.HTTP_RESPONSE_CODE"><constant>204</constant></setHeader>
 	  </route>
           <route>
 		<from uri="direct:tododone" />
-                <to uri="log:tododone?showHeaders=true" />
+                <setHeader headerName="Exchange.HTTP_URI"><constant>http://localhost:10080/engine-rest</constant></setHeader>
+                <setHeader headerName="Exchange.HTTP_PATH"><simple>/task/${header.id}/localVariables/done</simple></setHeader>
+                <setHeader headerName="CamelHttpMethod"><constant>PUT</constant></setHeader>
+                <setBody><constant>{"value" : true, "type": "Boolean"}</constant></setBody>
+		<to uri="http4://localhost:10080/engine-rest/" />
+                <setHeader headerName="Exchange.HTTP_URI"><constant>http://localhost:10080/engine-rest</constant></setHeader>
+                <setHeader headerName="Exchange.HTTP_PATH"><simple>/task/${header.id}/cpmplete</simple></setHeader>
+                <setHeader headerName="CamelHttpMethod"><constant>GET</constant></setHeader>
+		<to uri="http4://localhost:10080/engine-rest/" />
 		<setHeader headerName="Exchange.HTTP_RESPONSE_CODE"><constant>204</constant></setHeader>
 	  </route>
 	  

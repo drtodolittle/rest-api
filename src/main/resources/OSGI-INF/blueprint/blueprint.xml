@@ -113,6 +113,7 @@
                 <setHeader headerName="Exchange.HTTP_URI"><constant>http://localhost:10080/engine-rest</constant></setHeader>
                 <setHeader headerName="Exchange.HTTP_PATH"><simple>/task/${header.id}/localVariables/done</simple></setHeader>
                 <setHeader headerName="CamelHttpMethod"><constant>PUT</constant></setHeader>
+                <setHeader headerName="Exchange.CONTENT_TYPE"><constant>application/json</constant></setHeader>
                 <setBody><constant>{"value" : true, "type": "Boolean"}</constant></setBody>
 		<to uri="http4://localhost:10080/engine-rest/" />
                 <setHeader headerName="Exchange.HTTP_URI"><constant>http://localhost:10080/engine-rest</constant></setHeader>

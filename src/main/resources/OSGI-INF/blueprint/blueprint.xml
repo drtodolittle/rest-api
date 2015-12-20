@@ -16,6 +16,7 @@
   
   <bean class="org.apache.camel.component.servlet.CamelHttpTransportServlet" id="camelServlet"/>
   <bean class="de.drtodolittle.processor.ExtractProcessInstanceIds" id="extractProcessIdsProcessor" />
+  <bean class="de.drtodolittle.processor.ExtractTaskId" id="extractTaskIdProcessor" />
   <bean class="de.drtodolittle.processor.GenerateToDoJSON" id="generateToDoJSONProcessor" />
   <bean class="de.drtodolittle.processor.GenerateCreateProcessJSON" id="generateCreateProcessJSONProcessor" />
   <bean class="de.drtodolittle.aggregate.ProcessInstanceVariables" id="processInstanceVariablesAggregationStrategy" />
@@ -111,13 +112,19 @@
           <route>
 		<from uri="direct:tododone" />
                 <setHeader headerName="Exchange.HTTP_URI"><constant>http://localhost:10080/engine-rest</constant></setHeader>
-                <setHeader headerName="Exchange.HTTP_PATH"><simple>/task/${header.id}/variables/done</simple></setHeader>
+                <setHeader headerName="Exchange.HTTP_PATH"><simple>/task/${header.id}/cpmplete</simple></setHeader>
+                <setHeader headerName="Exchange.HTTP_QUERY"><simple>processInstanceId=${header.id}</simple></setHeader>
+                <setHeader headerName="CamelHttpMethod"><constant>GET</constant></setHeader>
+		<to uri="http4://localhost:10080/engine-rest/" />
+                <process ref="extractTaskIdProcessor" />
+                <setHeader headerName="Exchange.HTTP_URI"><constant>http://localhost:10080/engine-rest</constant></setHeader>
+                <setHeader headerName="Exchange.HTTP_PATH"><simple>/task/${header.taskid}/variables/done</simple></setHeader>
                 <setHeader headerName="CamelHttpMethod"><constant>PUT</constant></setHeader>
                 <setHeader headerName="Exchange.CONTENT_TYPE"><constant>application/json</constant></setHeader>
                 <setBody><constant>{"value" : true, "type": "Boolean"}</constant></setBody>
 		<to uri="http4://localhost:10080/engine-rest/" />
                 <setHeader headerName="Exchange.HTTP_URI"><constant>http://localhost:10080/engine-rest</constant></setHeader>
-                <setHeader headerName="Exchange.HTTP_PATH"><simple>/task/${header.id}/cpmplete</simple></setHeader>
+                <setHeader headerName="Exchange.HTTP_PATH"><simple>/task/${header.taskid}/cpmplete</simple></setHeader>
                 <setHeader headerName="CamelHttpMethod"><constant>GET</constant></setHeader>
 		<to uri="http4://localhost:10080/engine-rest/" />
 		<setHeader headerName="Exchange.HTTP_RESPONSE_CODE"><constant>204</constant></setHeader>

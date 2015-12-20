@@ -14,17 +14,18 @@ import org.apache.camel.Processor
  *
  * @author Guenther_D
  */
-class ExtractProcessInstanceIds implements Processor {
+class ExtractTaskId implements Processor {
 	
      public void process(Exchange exchange) {
         def input = exchange.getIn().getBody()
         def jsonSlurper = new JsonSlurper()
         def tasks = jsonSlurper.parse(input)
-        def processIds = []
+        def taskIds = []
 
-        tasks.each({processIds.add(it.id)})
+        tasks.each({taskIds.add(it.id)})
 
-        exchange.getIn().setHeader("processIds", processIds)
+        exchange.getIn().setHeader("taskid", taskIds[0])
          
      }
 }
+

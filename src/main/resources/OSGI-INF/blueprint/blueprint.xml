@@ -75,12 +75,10 @@
                 <setHeader headerName="Exchange.HTTP_QUERY"><constant>businessKey=dirk</constant></setHeader>
 		<to uri="http4://localhost:10080/engine-rest/process-instance?businessKey=dirk" />
                 <process ref="extractProcessIdsProcessor" />
-                <to uri="log:drtodolittle?showBody=true" />
                 <split strategyRef="processInstanceVariablesAggregationStrategy">
                     <simple>${header.processIds}</simple>
                     <to uri="direct:gettaskvariables" />
                 </split>
-                <to uri="log:drtodolittle?showBody=true" />
                 <setBody><simple>[${body}]</simple></setBody>
 	  </route>
 
@@ -93,11 +91,8 @@
                         return "processInstanceIdIn=$processInstanceIdIn"
                     </groovy>
                 </setHeader>
-                <to uri="log:drtodolittle?showBody=true" />
 		<to uri="http4://localhost:10080/engine-rest/process-instance?businessKey=dirk" />
-                <to uri="log:drtodolittle?showBody=true" />
                 <process ref="generateToDoJSONProcessor" />
-                <to uri="log:drtodolittle?showBody=true" />
 	  </route>
 	  
 	  <route>
@@ -107,8 +102,8 @@
 	  
 	  <route>
 		<from uri="direct:createtask" />
-                <to uri="log:createtask?showStreams=true&amp;showHeaders=true" />
                 <process ref="generateCreateProcessJSONProcessor" />
+                <to uri="log:createtask?showStreams=true&amp;showHeaders=true" />
                 <setHeader headerName="Exchange.HTTP_URI"><constant>http://localhost:10080/engine-rest</constant></setHeader>
                 <setHeader headerName="Exchange.HTTP_PATH"><constant>/process-definition/key/DrToDoLittle/start</constant></setHeader>
                 <setHeader headerName="CamelHttpMethod"><constant>POST</constant></setHeader>

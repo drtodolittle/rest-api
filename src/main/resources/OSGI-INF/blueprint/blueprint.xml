@@ -107,12 +107,14 @@
 	  
 	  <route>
 		<from uri="direct:createtask" />
+                <to uri="log:createtask?showStreams=true&amp;showHeaders=true" />
                 <process ref="generateCreateProcessJSONProcessor" />
                 <setHeader headerName="Exchange.HTTP_URI"><constant>http://localhost:10080/engine-rest</constant></setHeader>
                 <setHeader headerName="Exchange.HTTP_PATH"><constant>/process-definition/key/DrToDoLittle/start</constant></setHeader>
                 <setHeader headerName="CamelHttpMethod"><constant>POST</constant></setHeader>
                 <setHeader headerName="Exchange.CONTENT_TYPE"><constant>application/json</constant></setHeader>
 		<to uri="http4://localhost:10080/engine-rest/process-instance?businessKey=dirk" />
+                
 	  </route>
     </camelContext>
 

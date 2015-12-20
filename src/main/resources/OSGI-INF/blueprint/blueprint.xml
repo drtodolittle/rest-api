@@ -32,19 +32,19 @@
 
 		<rest path="/todos">
 			<get uri="/" produces="application/json">
-				<to uri="direct:gettasks" />
+				<to uri="direct:gettodos" />
 			</get>
 			<post uri="/" produces="application/json">
-				<to uri="direct:createtask" />
+				<to uri="direct:createtodo" />
 			</post>
 			<get uri="/{id}" produces="application/json">
-				<to uri="direct:gettask" />
+				<to uri="direct:gettodo" />
 			</get>
 			<delete uri="/{id}">
-				<to uri="direct:noanswer" />
+				<to uri="direct:deletetodo" />
 			</delete>
 			<put uri="/{id}" produces="application/json">
-				<to uri="direct:updatetask" />
+				<to uri="direct:updatetodo" />
 			</put>
 			<get uri="/{id}/done" produces="application/json">
 				<to uri="direct:noanswer" />
@@ -59,17 +59,17 @@
 	  </route>
 	  
 	  <route>
-		<from uri="direct:gettask" />
+		<from uri="direct:gettodo" />
 		<to uri="velocity:templates/gettask.vm" />
 	  </route>
 	  
 	  <route>
-		<from uri="direct:updatetask" />
+		<from uri="direct:updatetodo" />
 		<to uri="velocity:templates/updatetask.vm" />
 	  </route>
 
 	  <route>
-		<from uri="direct:gettasks" />
+		<from uri="direct:gettodos" />
                 <setHeader headerName="Exchange.HTTP_URI"><constant>http://localhost:10080/engine-rest</constant></setHeader>
                 <setHeader headerName="Exchange.HTTP_PATH"><constant>/process-instance</constant></setHeader>
                 <setHeader headerName="Exchange.HTTP_QUERY"><constant>businessKey=dirk</constant></setHeader>
@@ -77,13 +77,13 @@
                 <process ref="extractProcessIdsProcessor" />
                 <split strategyRef="processInstanceVariablesAggregationStrategy">
                     <simple>${header.processIds}</simple>
-                    <to uri="direct:gettaskvariables" />
+                    <to uri="direct:gettodovariables" />
                 </split>
                 <setBody><simple>[${body}]</simple></setBody>
 	  </route>
 
           <route>
-		<from uri="direct:gettaskvariables" />
+		<from uri="direct:gettodovariables" />
                 <setHeader headerName="Exchange.HTTP_PATH"><constant>/variable-instance</constant></setHeader>
                 <setHeader headerName="Exchange.HTTP_QUERY">
                     <groovy>
@@ -99,9 +99,24 @@
 		<from uri="direct:noanswer" />
 		<setHeader headerName="Exchange.HTTP_RESPONSE_CODE"><constant>204</constant></setHeader>
 	  </route>
+
+          <route>
+		<from uri="direct:deletetodo" />
+                <setHeader headerName="Exchange.HTTP_URI"><constant>http://localhost:10080/engine-rest</constant></setHeader>
+                <setHeader headerName="Exchange.HTTP_PATH">
+                    <groovy>
+                        def origPath = request.getHeader(Exchange.HTTP_PATH)
+                        def id = origPath.substring(origPath.lastIndexOf("/"))
+                        return "/process-instance" + id
+                    </groovy>
+                </setHeader>
+                <setHeader headerName="CamelHttpMethod"><constant>DELETE</constant></setHeader>
+		<to uri="http4://localhost:10080/engine-rest/" />
+		<setHeader headerName="Exchange.HTTP_RESPONSE_CODE"><constant>204</constant></setHeader>
+	  </route>
 	  
 	  <route>
-		<from uri="direct:createtask" />
+		<from uri="direct:createtodo" />
                 <process ref="generateCreateProcessJSONProcessor" />
                 <to uri="log:createtask?showStreams=true&amp;showHeaders=true" />
                 <setHeader headerName="Exchange.HTTP_URI"><constant>http://localhost:10080/engine-rest</constant></setHeader>

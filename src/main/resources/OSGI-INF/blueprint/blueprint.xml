@@ -112,7 +112,7 @@
           <route>
 		<from uri="direct:tododone" />
                 <setHeader headerName="Exchange.HTTP_URI"><constant>http://localhost:10080/engine-rest</constant></setHeader>
-                <setHeader headerName="Exchange.HTTP_PATH"><simple>/task/${header.id}</simple></setHeader>
+                <setHeader headerName="Exchange.HTTP_PATH"><simple>/task</simple></setHeader>
                 <setHeader headerName="Exchange.HTTP_QUERY"><simple>processInstanceId=${header.id}</simple></setHeader>
                 <setHeader headerName="CamelHttpMethod"><constant>GET</constant></setHeader>
 		<to uri="http4://localhost:10080/engine-rest/" />

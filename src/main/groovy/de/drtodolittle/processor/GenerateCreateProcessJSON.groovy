@@ -20,7 +20,7 @@ class GenerateCreateProcessJSON implements Processor{
     
     
     public void process(Exchange exchange) {
-        def input = exchange.in.body
+        def input = "test1"
         def builder = new groovy.json.JsonBuilder()
         builder {
             variables {

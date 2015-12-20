@@ -105,7 +105,7 @@
                 <setHeader headerName="Exchange.HTTP_URI"><constant>http://localhost:10080/engine-rest</constant></setHeader>
                 <setHeader headerName="Exchange.HTTP_PATH">
                     <groovy>
-                        def origPath = request.getHeader(Exchange.HTTP_PATH)
+                        def origPath = request.getHeader(exchange.HTTP_PATH)
                         def id = origPath.substring(origPath.lastIndexOf("/"))
                         return "/process-instance" + id
                     </groovy>

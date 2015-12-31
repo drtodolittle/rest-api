@@ -50,6 +50,9 @@
 			<get uri="/{id}/done" produces="application/json">
 				<to uri="direct:tododone" />
 			</get>
+			<post uri="/login" produces="application/json">
+				<to uri="direct:login" />
+			</post>
 		</rest>
 
 	  <route>
@@ -69,6 +72,16 @@
 		<to uri="velocity:templates/updatetask.vm" />
 	  </route>
 
+	  	  <route>
+		<from uri="direct:login" />
+                <setHeader headerName="Exchange.HTTP_URI"><constant>http://localhost:10080</constant></setHeader>
+                <setHeader headerName="Exchange.HTTP_PATH"><constant>/camunda/api/admin/auth/user/default/login/tasklist</constant></setHeader>
+                <setHeader headerName="CamelHttpMethod"><constant>POST</constant></setHeader>
+				<setHeader headerName="Accept"><constant>application/json</constant></setHeader>
+				<to uri="http4://localhost:10080/engine-rest/process-instance?businessKey=dirk" />
+	  </route>
+
+	  
 	  <route>
 		<from uri="direct:gettodos" />
                 <setHeader headerName="Exchange.HTTP_URI"><constant>http://localhost:10080/engine-rest</constant></setHeader>

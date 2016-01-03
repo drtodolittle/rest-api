@@ -14,6 +14,7 @@
   <bean class="de.drtodolittle.processor.GenerateCreateProcessJSON" id="generateCreateProcessJSONProcessor" />
   <bean class="de.drtodolittle.aggregate.ProcessInstanceVariables" id="processInstanceVariablesAggregationStrategy" />
   <bean class="de.drtodolittle.processor.ExtractUserNameAndPassword" id="extractUserNameAndPassword" />
+  <bean class="de.drtodolittle.processor.CreateJsonWebToken" id="createjsonwebtoken" />
 
   <camelContext xmlns="http://camel.apache.org/schema/blueprint">
     <restConfiguration bindingMode="off" component="servlet" contextPath="/api" enableCORS="true"/>
@@ -61,10 +62,10 @@
     </route>
     <route>
       <from uri="direct:login" />
-      <!--process ref="extractUserNameAndPassword" /-->
-      <removeHeaders pattern="CamelHttp*" />
+      <removeHeaders pattern="*" />
+      <process ref="extractUserNameAndPassword" />
       <setHeader headerName="Exchange.HTTP_URI">
-        <constant>http://localhost:10080</constant>
+        <constant>http://localhost:2000</constant>
       </setHeader>
       <setHeader headerName="Exchange.HTTP_PATH">
         <constant>/camunda/api/admin/auth/user/default/login/tasklist</constant>
@@ -78,8 +79,14 @@
       <setHeader headerName="Content-Type">
         <constant>application/x-www-form-urlencoded</constant>
       </setHeader>
-      <to uri="log:debugexchange?showAll=true" />
       <to uri="http4://fromheader?throwExceptionOnFailure=false" />
+      <to uri="log:debuglogin?showHeaders=true" />
+      <choice>
+            <when>
+                <groovy>request.headers.CamelHttpResponseCode == 200</groovy>
+                <process ref="createjsonwebtoken" />
+            </when>
+        </choice>
     </route>
     <route>
       <from uri="direct:gettodos" />

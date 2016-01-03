@@ -21,5 +21,6 @@ class ExtractUserNameAndPassword implements Processor {
         def jsonSlurper = new JsonSlurper()
         def userInfos = jsonSlurper.parse(input)
         exchange.getIn().setBody("username=${userInfos.email}&password=${userInfos.password}")
+        exchange.getIn().setHeader("username", userInfos.email)
      }
 }

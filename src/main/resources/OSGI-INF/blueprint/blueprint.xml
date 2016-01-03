@@ -61,7 +61,7 @@
     </route>
     <route>
       <from uri="direct:login" />
-      <process ref="extractUserNameAndPassword" />
+      <!--process ref="extractUserNameAndPassword" /-->
       <removeHeaders pattern="CamelHttp*" />
       <setHeader headerName="Exchange.HTTP_URI">
         <constant>http://localhost:10080</constant>

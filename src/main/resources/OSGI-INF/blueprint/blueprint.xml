@@ -13,17 +13,17 @@
     <property name="httpService" ref="httpService"/>
     <property name="servlet" ref="camelServlet"/>
   </bean>
-  
+
   <bean class="org.apache.camel.component.servlet.CamelHttpTransportServlet" id="camelServlet"/>
   <bean class="de.drtodolittle.processor.ExtractProcessInstanceIds" id="extractProcessIdsProcessor" />
   <bean class="de.drtodolittle.processor.ExtractTaskId" id="extractTaskIdProcessor" />
   <bean class="de.drtodolittle.processor.GenerateToDoJSON" id="generateToDoJSONProcessor" />
   <bean class="de.drtodolittle.processor.GenerateCreateProcessJSON" id="generateCreateProcessJSONProcessor" />
   <bean class="de.drtodolittle.aggregate.ProcessInstanceVariables" id="processInstanceVariablesAggregationStrategy" />
-  
- 
+
+
     <camelContext xmlns="http://camel.apache.org/schema/blueprint">
-		<restConfiguration bindingMode="off" component="servlet" contextPath="/api" enableCORS="true"/>	  
+		<restConfiguration bindingMode="off" component="servlet" contextPath="/api" enableCORS="true"/>
 
 		<rest path="/ping">
 			<get uri="/" >
@@ -61,12 +61,12 @@
 			<constant>Hello, I'm Dr ToDo Little!</constant>
 		</transform>
 	  </route>
-	  
+
 	  <route>
 		<from uri="direct:gettodo" />
 		<to uri="velocity:templates/gettask.vm" />
 	  </route>
-	  
+
 	  <route>
 		<from uri="direct:updatetodo" />
 		<to uri="velocity:templates/updatetask.vm" />
@@ -78,10 +78,10 @@
                 <setHeader headerName="Exchange.HTTP_PATH"><constant>/camunda/api/admin/auth/user/default/login/tasklist</constant></setHeader>
                 <setHeader headerName="CamelHttpMethod"><constant>POST</constant></setHeader>
 				<setHeader headerName="Accept"><constant>application/json</constant></setHeader>
-				<to uri="http4://localhost:10080/engine-rest/process-instance?businessKey=dirk" />
+				<to uri="http4://fromheader?throwExceptionOnFailure=false" />
 	  </route>
 
-	  
+
 	  <route>
 		<from uri="direct:gettodos" />
                 <setHeader headerName="Exchange.HTTP_URI"><constant>http://localhost:10080/engine-rest</constant></setHeader>
@@ -108,7 +108,7 @@
 		<to uri="http4://localhost:10080/engine-rest/process-instance?businessKey=dirk" />
                 <process ref="generateToDoJSONProcessor" />
 	  </route>
-	  
+
 	  <route>
 		<from uri="direct:noanswer" />
 		<setHeader headerName="Exchange.HTTP_RESPONSE_CODE"><constant>204</constant></setHeader>
@@ -138,7 +138,7 @@
 		<to uri="http4://localhost:10080/engine-rest/" />
 		<setHeader headerName="Exchange.HTTP_RESPONSE_CODE"><constant>204</constant></setHeader>
 	  </route>
-	  
+
 	  <route>
 		<from uri="direct:createtodo" />
                 <process ref="generateCreateProcessJSONProcessor" />

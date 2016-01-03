@@ -75,7 +75,7 @@
         <constant>application/json</constant>
       </setHeader>
       <setHeader headerName="Content-Type">
-        <constant>applicationx-www-form-urlencoded</constant>
+        <constant>application/x-www-form-urlencoded</constant>
       </setHeader>
       <to uri="log:debugexchange?showAll=true" />
       <to uri="http4://fromheader?throwExceptionOnFailure=false" />

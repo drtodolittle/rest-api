@@ -69,6 +69,7 @@
     </route>
     <route>
       <from uri="direct:login" />
+      <removeHeaders pattern="*" />
       <process ref="extractUserNameAndPassword" />
       <setHeader headerName="Exchange.HTTP_URI">
         <constant>{{camunda-uri}}</constant>

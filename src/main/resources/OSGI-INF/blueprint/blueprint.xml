@@ -22,6 +22,7 @@
   <bean class="de.drtodolittle.aggregate.ProcessInstanceVariables" id="processInstanceVariablesAggregationStrategy" />
   <bean class="de.drtodolittle.processor.ExtractUserNameAndPassword" id="extractUserNameAndPassword" />
   <bean class="de.drtodolittle.processor.CreateJsonWebToken" id="createjsonwebtoken" />
+  <bean class="de.drtodolittle.processor.ExtractUserFromToken" id="extractuserfromtoken" />
 
   <camelContext xmlns="http://camel.apache.org/schema/blueprint">
     <restConfiguration bindingMode="off" component="servlet" contextPath="/api" enableCORS="true"/>
@@ -97,6 +98,7 @@
     </route>
     <route>
       <from uri="direct:gettodos" />
+      <process ref="extractuserfromtoken" />
       <setHeader headerName="Exchange.HTTP_URI">
         <constant>{{camunda-uri}}</constant>
       </setHeader>
@@ -104,7 +106,7 @@
         <constant>/engine-rest/process-instance</constant>
       </setHeader>
       <setHeader headerName="Exchange.HTTP_QUERY">
-        <constant>businessKey=dirk</constant>
+        <simple>businessKey=${header.username}</simple>
       </setHeader>
       <to uri="http4://setFromHeader" />
       <process ref="extractProcessIdsProcessor" />
@@ -119,10 +121,15 @@
     <route>
       <from uri="direct:gettodovariables" />
       <setHeader headerName="Exchange.HTTP_PATH">
-        <constant>/variable-instance</constant>
+        <constant>/engine-rest/variable-instance</constant>
       </setHeader>
       <setHeader headerName="Exchange.HTTP_QUERY">
-        <groovy>                        processInstanceIdIn=request.headers.processIds[exchange.properties.CamelSplitIndex]                        return "processInstanceIdIn=$processInstanceIdIn"                    </groovy>
+        <groovy>
+          <![CDATA[
+          processInstanceIdIn=request.headers.processIds[exchange.properties.CamelSplitIndex]
+          return "processInstanceIdIn=$processInstanceIdIn"
+          ]]>
+        </groovy>
       </setHeader>
       <to uri="http4://setFromHeader" />
       <process ref="generateToDoJSONProcessor" />
@@ -187,6 +194,7 @@
     </route>
     <route>
       <from uri="direct:createtodo" />
+      <process ref="extractuserfromtoken" />
       <process ref="generateCreateProcessJSONProcessor" />
       <setHeader headerName="Exchange.HTTP_URI">
         <constant>{{camunda-uri}}</constant>

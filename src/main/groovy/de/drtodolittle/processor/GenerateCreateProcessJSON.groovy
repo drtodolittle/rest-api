@@ -18,15 +18,16 @@ import org.apache.camel.Processor
  */
 class GenerateCreateProcessJSON implements Processor{
 
-    
-    
+
+
     public void process(Exchange exchange) {
        def input = exchange.in.body
+       def username = exchange.in.headers.username
        def jsonSlurper = new JsonSlurper()
        def vars = jsonSlurper.parse(input)
-         
-        
-        
+
+
+
         def builder = new groovy.json.JsonBuilder()
         builder {
             variables {
@@ -39,20 +40,19 @@ class GenerateCreateProcessJSON implements Processor{
                     type 'Boolean'
 		}
 		startedby {
-                    value 'dirk'
+                    value username
                     type 'String'
 		}
             }
-            businessKey 'dirk'
+            businessKey username
 	}
 
         exchange.in.body = builder.toString()
      }
-    
-    
-    
-    
-    
-    
-}
 
+
+
+
+
+
+}

@@ -20,6 +20,6 @@ class ExtractTopic implements Processor {
         def input = exchange.getIn().getBody()
         def jsonSlurper = new JsonSlurper()
         def task = jsonSlurper.parse(input)
-        exchange.getIn().setBody('{"value" : "' + task.topic + '", "type": "String"}')
+        exchange.getIn().setHeader("updatetopic", '{"value" : "' + task.topic + '", "type": "String"}')
      }
 }

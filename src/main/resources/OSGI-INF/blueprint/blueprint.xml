@@ -67,6 +67,7 @@
     </route>
     <route>
       <from uri="direct:updatetodo" />
+      <process ref="extracttopic" />
       <to uri="direct:extracttaskid" />
       <setHeader headerName="Exchange.HTTP_URI">
         <constant>{{camunda-uri}}</constant>
@@ -80,7 +81,9 @@
       <setHeader headerName="Exchange.CONTENT_TYPE">
         <constant>application/json</constant>
       </setHeader>
-      <process ref="extracttopic" />
+      <setBody>
+        <simple>${header.updatetopic}</simple>
+      </setBody>
       <to uri="http4://setFromHeader" />
       <setHeader headerName="Exchange.HTTP_RESPONSE_CODE">
         <constant>204</constant>

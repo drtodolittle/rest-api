@@ -23,6 +23,7 @@
   <bean class="de.drtodolittle.processor.ExtractUserNameAndPassword" id="extractUserNameAndPassword" />
   <bean class="de.drtodolittle.processor.CreateJsonWebToken" id="createjsonwebtoken" />
   <bean class="de.drtodolittle.processor.ExtractUserFromToken" id="extractuserfromtoken" />
+  <bean class="de.drtodolittle.processor.ExtractTopic" id="extracttopic" />
 
   <camelContext xmlns="http://camel.apache.org/schema/blueprint">
     <restConfiguration bindingMode="off" component="servlet" contextPath="/api" enableCORS="true"/>
@@ -66,7 +67,24 @@
     </route>
     <route>
       <from uri="direct:updatetodo" />
-      <to uri="velocity:templates/updatetask.vm" />
+      <to uri="direct:extracttaskid" />
+      <setHeader headerName="Exchange.HTTP_URI">
+        <constant>{{camunda-uri}}</constant>
+      </setHeader>
+      <setHeader headerName="Exchange.HTTP_PATH">
+        <simple>/engine-rest/task/${header.taskid}/variables/topic</simple>
+      </setHeader>
+      <setHeader headerName="CamelHttpMethod">
+        <constant>PUT</constant>
+      </setHeader>
+      <setHeader headerName="Exchange.CONTENT_TYPE">
+        <constant>application/json</constant>
+      </setHeader>
+      <process ref="extracttopic" />
+      <to uri="http4://setFromHeader" />
+      <setHeader headerName="Exchange.HTTP_RESPONSE_CODE">
+        <constant>204</constant>
+      </setHeader>
     </route>
     <route>
       <from uri="direct:login" />
@@ -157,7 +175,7 @@
       </setHeader>
     </route>
     <route>
-      <from uri="direct:tododone" />
+      <from uri="direct:extracttaskid" />
       <setHeader headerName="Exchange.HTTP_URI">
         <constant>{{camunda-uri}}</constant>
       </setHeader>
@@ -172,6 +190,10 @@
       </setHeader>
       <to uri="http4://setFromHeader" />
       <process ref="extractTaskIdProcessor" />
+    </route>
+    <route>
+      <from uri="direct:tododone" />
+      <to uri="direct:extracttaskid" />
       <setHeader headerName="Exchange.HTTP_URI">
         <constant>{{camunda-uri}}</constant>
       </setHeader>

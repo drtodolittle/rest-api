@@ -23,10 +23,10 @@
   <bean class="de.drtodolittle.aggregate.ProcessInstanceVariables" id="processInstanceVariablesAggregationStrategy" />
   <bean class="de.drtodolittle.processor.ExtractUserNameAndPassword" id="extractUserNameAndPassword" />
   <bean class="de.drtodolittle.processor.CreateJsonWebToken" id="createjsonwebtoken">
-	<property name="secret" ref="jsonwebtokensecret" />
+	<property name="secret" value="${jsonwebtokensecret}" />
   </bean>
   <bean class="de.drtodolittle.processor.ExtractUserFromToken" id="extractuserfromtoken">
-	<property name="secret" ref="jsonwebtokensecret" />
+	<property name="secret" value="${jsonwebtokensecret}" />
   </bean>
   <bean class="de.drtodolittle.processor.ExtractTopic" id="extracttopic" />
 

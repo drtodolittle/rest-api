@@ -2,253 +2,254 @@
 <blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"            xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.1.0"           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"           xsi:schemaLocation="              http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd              http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.1.0 http://aries.apache.org/schemas/blueprint-cm/blueprint-cm-1.1.0.xsd              http://camel.apache.org/schema/blueprint http://camel.apache.org/schema/blueprint/camel-blueprint.xsd">
 
 
-  <cm:property-placeholder persistent-id="drtodolittle" update-strategy="reload">
-    <cm:default-properties>
-      <cm:property name="camunda-uri" value="http://localhost:10080" />
-      <cm:property name="jsonwebtokensecret" value="changeit" />
-    </cm:default-properties>
-  </cm:property-placeholder>
-  <!-- to setup camel servlet with OSGi HttpService -->
-  <reference id="httpService" interface="org.osgi.service.http.HttpService"/>
-  <bean class="org.apache.camel.component.servlet.osgi.OsgiServletRegisterer" destroy-method="unregister" init-method="register">
-    <property name="alias" value="/api"/>
-    <property name="httpService" ref="httpService"/>
-    <property name="servlet" ref="camelServlet"/>
-  </bean>
-  <bean class="org.apache.camel.component.servlet.CamelHttpTransportServlet" id="camelServlet"/>
-  <bean class="de.drtodolittle.processor.ExtractProcessInstanceIds" id="extractProcessIdsProcessor" />
-  <bean class="de.drtodolittle.processor.ExtractTaskId" id="extractTaskIdProcessor" />
-  <bean class="de.drtodolittle.processor.GenerateToDoJSON" id="generateToDoJSONProcessor" />
-  <bean class="de.drtodolittle.processor.GenerateCreateProcessJSON" id="generateCreateProcessJSONProcessor" />
-  <bean class="de.drtodolittle.aggregate.ProcessInstanceVariables" id="processInstanceVariablesAggregationStrategy" />
-  <bean class="de.drtodolittle.processor.ExtractUserNameAndPassword" id="extractUserNameAndPassword" />
-  <bean class="de.drtodolittle.processor.CreateJsonWebToken" id="createjsonwebtoken">
-	<property name="secret" value="${jsonwebtokensecret}" />
-  </bean>
-  <bean class="de.drtodolittle.processor.ExtractUserFromToken" id="extractuserfromtoken">
-	<property name="secret" value="${jsonwebtokensecret}" />
-  </bean>
-  <bean class="de.drtodolittle.processor.ExtractTopic" id="extracttopic" />
+	<cm:property-placeholder persistent-id="drtodolittle" update-strategy="reload">
+		<cm:default-properties>
+			<cm:property name="camunda-uri" value="http://localhost:10080" />
+			<cm:property name="jsonwebtokensecret" value="changeit" />
+		</cm:default-properties>
+	</cm:property-placeholder>
+	<!-- to setup camel servlet with OSGi HttpService -->
+	<reference id="httpService" interface="org.osgi.service.http.HttpService"/>
+	<bean class="org.apache.camel.component.servlet.osgi.OsgiServletRegisterer" destroy-method="unregister" init-method="register">
+		<property name="alias" value="/api"/>
+		<property name="httpService" ref="httpService"/>
+		<property name="servlet" ref="camelServlet"/>
+	</bean>
+	<bean class="org.apache.camel.component.servlet.CamelHttpTransportServlet" id="camelServlet"/>
+	<bean class="de.drtodolittle.processor.ExtractProcessInstanceIds" id="extractProcessIdsProcessor" />
+	<bean class="de.drtodolittle.processor.ExtractTaskId" id="extractTaskIdProcessor" />
+	<bean class="de.drtodolittle.processor.GenerateToDoJSON" id="generateToDoJSONProcessor" />
+	<bean class="de.drtodolittle.processor.GenerateCreateProcessJSON" id="generateCreateProcessJSONProcessor" />
+	<bean class="de.drtodolittle.aggregate.ProcessInstanceVariables" id="processInstanceVariablesAggregationStrategy" />
+	<bean class="de.drtodolittle.processor.ExtractUserNameAndPassword" id="extractUserNameAndPassword" />
+	<bean class="de.drtodolittle.processor.CreateJsonWebToken" id="createjsonwebtoken">
+		<property name="secret" value="${jsonwebtokensecret}" />
+	</bean>
+	<bean class="de.drtodolittle.processor.ExtractUserFromToken" id="extractuserfromtoken">
+		<property name="secret" value="${jsonwebtokensecret}" />
+	</bean>
+	<bean class="de.drtodolittle.processor.ExtractTopic" id="extracttopic" />
 
-  <camelContext xmlns="http://camel.apache.org/schema/blueprint">
-    <restConfiguration bindingMode="off" component="servlet" contextPath="/api" enableCORS="true"/>
-    <rest path="/ping">
-      <get uri="/" >
-        <to uri="direct:ping" />
-      </get>
-    </rest>
-	<rest path="/users">
-		<post uri="/" produces="application/json">
-			<to uri="direct:registeruser" />
-		</post>
-    <rest path="/todos">
-      <get uri="/" produces="application/json">
-        <to uri="direct:gettodos" />
-      </get>
-      <post uri="/" produces="application/json">
-        <to uri="direct:createtodo" />
-      </post>
-      <get uri="/{id}" produces="application/json">
-        <to uri="direct:gettodo" />
-      </get>
-      <delete uri="/{id}">
-        <to uri="direct:deletetodo" />
-      </delete>
-      <put uri="/{id}" produces="application/json">
-        <to uri="direct:updatetodo" />
-      </put>
-      <get uri="/{id}/done" produces="application/json">
-        <to uri="direct:tododone" />
-      </get>
-      <post uri="/login" produces="application/json">
-        <to uri="direct:login" />
-      </post>
-    </rest>
-    <route>
-      <from uri="direct:ping" />
-      <transform>
-        <constant>Hello, I'm Dr ToDo Little!</constant>
-      </transform>
-    </route>
-    <route>
-      <from uri="direct:gettodo" />
-      <to uri="velocity:templates/gettask.vm" />
-    </route>
-    <route>
-      <from uri="direct:updatetodo" />
-      <process ref="extracttopic" />
-      <to uri="direct:extracttaskid" />
-      <setHeader headerName="Exchange.HTTP_URI">
-        <constant>{{camunda-uri}}</constant>
-      </setHeader>
-      <setHeader headerName="Exchange.HTTP_PATH">
-        <simple>/engine-rest/task/${header.taskid}/variables/topic</simple>
-      </setHeader>
-      <setHeader headerName="CamelHttpMethod">
-        <constant>PUT</constant>
-      </setHeader>
-      <setHeader headerName="Exchange.CONTENT_TYPE">
-        <constant>application/json</constant>
-      </setHeader>
-      <setBody>
-        <simple>${header.updatetopic}</simple>
-      </setBody>
-      <to uri="http4://setFromHeader" />
-      <setHeader headerName="Exchange.HTTP_RESPONSE_CODE">
-        <constant>204</constant>
-      </setHeader>
-    </route>
-    <route>
-      <from uri="direct:login" />
-      <removeHeaders pattern="*" />
-      <process ref="extractUserNameAndPassword" />
-      <setHeader headerName="Exchange.HTTP_URI">
-        <constant>{{camunda-uri}}</constant>
-      </setHeader>
-      <setHeader headerName="Exchange.HTTP_PATH">
-        <constant>/camunda/api/admin/auth/user/default/login/tasklist</constant>
-      </setHeader>
-      <setHeader headerName="CamelHttpMethod">
-        <constant>POST</constant>
-      </setHeader>
-      <setHeader headerName="Accept">
-        <constant>application/json</constant>
-      </setHeader>
-      <setHeader headerName="Content-Type">
-        <constant>application/x-www-form-urlencoded</constant>
-      </setHeader>
-      <to uri="http4://setFromHeader?throwExceptionOnFailure=false" />
-      <to uri="log:debuglogin?showHeaders=true" />
-      <choice>
-        <when>
-          <groovy>request.headers.CamelHttpResponseCode == 200</groovy>
-          <process ref="createjsonwebtoken" />
-        </when>
-      </choice>
-    </route>
-    <route>
-      <from uri="direct:gettodos" />
-      <process ref="extractuserfromtoken" />
-      <setHeader headerName="Exchange.HTTP_URI">
-        <constant>{{camunda-uri}}</constant>
-      </setHeader>
-      <setHeader headerName="Exchange.HTTP_PATH">
-        <constant>/engine-rest/process-instance</constant>
-      </setHeader>
-      <setHeader headerName="Exchange.HTTP_QUERY">
-        <simple>businessKey=${header.username}</simple>
-      </setHeader>
-      <to uri="http4://setFromHeader" />
-      <process ref="extractProcessIdsProcessor" />
-      <split strategyRef="processInstanceVariablesAggregationStrategy">
-        <simple>${header.processIds}</simple>
-        <to uri="direct:gettodovariables" />
-      </split>
-      <setBody>
-        <simple>[${body}]</simple>
-      </setBody>
-    </route>
-    <route>
-      <from uri="direct:gettodovariables" />
-      <setHeader headerName="Exchange.HTTP_PATH">
-        <constant>/engine-rest/variable-instance</constant>
-      </setHeader>
-      <setHeader headerName="Exchange.HTTP_QUERY">
-        <groovy>
-          <![CDATA[
+	<camelContext xmlns="http://camel.apache.org/schema/blueprint">
+		<restConfiguration bindingMode="off" component="servlet" contextPath="/api" enableCORS="true"/>
+		<rest path="/ping">
+			<get uri="/" >
+				<to uri="direct:ping" />
+			</get>
+		</rest>
+		<rest path="/users">
+			<post uri="/" produces="application/json">
+				<to uri="direct:registeruser" />
+			</post>
+		</rest>
+		<rest path="/todos">
+			<get uri="/" produces="application/json">
+				<to uri="direct:gettodos" />
+			</get>
+			<post uri="/" produces="application/json">
+				<to uri="direct:createtodo" />
+			</post>
+			<get uri="/{id}" produces="application/json">
+				<to uri="direct:gettodo" />
+			</get>
+			<delete uri="/{id}">
+				<to uri="direct:deletetodo" />
+			</delete>
+			<put uri="/{id}" produces="application/json">
+				<to uri="direct:updatetodo" />
+			</put>
+			<get uri="/{id}/done" produces="application/json">
+				<to uri="direct:tododone" />
+			</get>
+			<post uri="/login" produces="application/json">
+				<to uri="direct:login" />
+			</post>
+		</rest>
+		<route>
+			<from uri="direct:ping" />
+			<transform>
+				<constant>Hello, I'm Dr ToDo Little!</constant>
+			</transform>
+		</route>
+		<route>
+			<from uri="direct:gettodo" />
+			<to uri="velocity:templates/gettask.vm" />
+		</route>
+		<route>
+			<from uri="direct:updatetodo" />
+			<process ref="extracttopic" />
+			<to uri="direct:extracttaskid" />
+			<setHeader headerName="Exchange.HTTP_URI">
+				<constant>{{camunda-uri}}</constant>
+			</setHeader>
+			<setHeader headerName="Exchange.HTTP_PATH">
+				<simple>/engine-rest/task/${header.taskid}/variables/topic</simple>
+			</setHeader>
+			<setHeader headerName="CamelHttpMethod">
+				<constant>PUT</constant>
+			</setHeader>
+			<setHeader headerName="Exchange.CONTENT_TYPE">
+				<constant>application/json</constant>
+			</setHeader>
+			<setBody>
+				<simple>${header.updatetopic}</simple>
+			</setBody>
+			<to uri="http4://setFromHeader" />
+			<setHeader headerName="Exchange.HTTP_RESPONSE_CODE">
+				<constant>204</constant>
+			</setHeader>
+		</route>
+		<route>
+			<from uri="direct:login" />
+			<removeHeaders pattern="*" />
+			<process ref="extractUserNameAndPassword" />
+			<setHeader headerName="Exchange.HTTP_URI">
+				<constant>{{camunda-uri}}</constant>
+			</setHeader>
+			<setHeader headerName="Exchange.HTTP_PATH">
+				<constant>/camunda/api/admin/auth/user/default/login/tasklist</constant>
+			</setHeader>
+			<setHeader headerName="CamelHttpMethod">
+				<constant>POST</constant>
+			</setHeader>
+			<setHeader headerName="Accept">
+				<constant>application/json</constant>
+			</setHeader>
+			<setHeader headerName="Content-Type">
+				<constant>application/x-www-form-urlencoded</constant>
+			</setHeader>
+			<to uri="http4://setFromHeader?throwExceptionOnFailure=false" />
+			<to uri="log:debuglogin?showHeaders=true" />
+			<choice>
+				<when>
+					<groovy>request.headers.CamelHttpResponseCode == 200</groovy>
+					<process ref="createjsonwebtoken" />
+				</when>
+			</choice>
+		</route>
+		<route>
+			<from uri="direct:gettodos" />
+			<process ref="extractuserfromtoken" />
+			<setHeader headerName="Exchange.HTTP_URI">
+				<constant>{{camunda-uri}}</constant>
+			</setHeader>
+			<setHeader headerName="Exchange.HTTP_PATH">
+				<constant>/engine-rest/process-instance</constant>
+			</setHeader>
+			<setHeader headerName="Exchange.HTTP_QUERY">
+				<simple>businessKey=${header.username}</simple>
+			</setHeader>
+			<to uri="http4://setFromHeader" />
+			<process ref="extractProcessIdsProcessor" />
+			<split strategyRef="processInstanceVariablesAggregationStrategy">
+				<simple>${header.processIds}</simple>
+				<to uri="direct:gettodovariables" />
+			</split>
+			<setBody>
+				<simple>[${body}]</simple>
+			</setBody>
+		</route>
+		<route>
+			<from uri="direct:gettodovariables" />
+			<setHeader headerName="Exchange.HTTP_PATH">
+				<constant>/engine-rest/variable-instance</constant>
+			</setHeader>
+			<setHeader headerName="Exchange.HTTP_QUERY">
+				<groovy>
+					<![CDATA[
           processInstanceIdIn=request.headers.processIds[exchange.properties.CamelSplitIndex]
           return "processInstanceIdIn=$processInstanceIdIn"
           ]]>
-        </groovy>
-      </setHeader>
-      <to uri="http4://setFromHeader" />
-      <process ref="generateToDoJSONProcessor" />
-    </route>
-    <route>
-      <from uri="direct:noanswer" />
-      <setHeader headerName="Exchange.HTTP_RESPONSE_CODE">
-        <constant>204</constant>
-      </setHeader>
-    </route>
-    <route>
-      <from uri="direct:deletetodo" />
-      <setHeader headerName="Exchange.HTTP_URI">
-        <constant>{{camunda-uri}}</constant>
-      </setHeader>
-      <setHeader headerName="Exchange.HTTP_PATH">
-        <simple>/engine-rest/process-instance/${header.id}</simple>
-      </setHeader>
-      <setHeader headerName="CamelHttpMethod">
-        <constant>DELETE</constant>
-      </setHeader>
-      <to uri="http4://setFromHeader" />
-      <setHeader headerName="Exchange.HTTP_RESPONSE_CODE">
-        <constant>204</constant>
-      </setHeader>
-    </route>
-    <route>
-      <from uri="direct:extracttaskid" />
-      <setHeader headerName="Exchange.HTTP_URI">
-        <constant>{{camunda-uri}}</constant>
-      </setHeader>
-      <setHeader headerName="Exchange.HTTP_PATH">
-        <simple>/engine-rest/task</simple>
-      </setHeader>
-      <setHeader headerName="Exchange.HTTP_QUERY">
-        <simple>processInstanceId=${header.id}</simple>
-      </setHeader>
-      <setHeader headerName="CamelHttpMethod">
-        <constant>GET</constant>
-      </setHeader>
-      <to uri="http4://setFromHeader" />
-      <process ref="extractTaskIdProcessor" />
-    </route>
-    <route>
-      <from uri="direct:tododone" />
-      <to uri="direct:extracttaskid" />
-      <setHeader headerName="Exchange.HTTP_URI">
-        <constant>{{camunda-uri}}</constant>
-      </setHeader>
-      <setHeader headerName="Exchange.HTTP_PATH">
-        <simple>/engine-rest/task/${header.taskid}/complete</simple>
-      </setHeader>
-      <setHeader headerName="CamelHttpMethod">
-        <constant>POST</constant>
-      </setHeader>
-      <setHeader headerName="Exchange.CONTENT_TYPE">
-        <constant>application/json</constant>
-      </setHeader>
-      <setBody>
-        <constant>{"variables": {"done": {"value" : true}}}</constant>
-      </setBody>
-      <to uri="http4://setFromHeader" />
-      <setHeader headerName="Exchange.HTTP_RESPONSE_CODE">
-        <constant>204</constant>
-      </setHeader>
-    </route>
-    <route>
-      <from uri="direct:createtodo" />
-      <process ref="extractuserfromtoken" />
-      <process ref="generateCreateProcessJSONProcessor" />
-      <setHeader headerName="Exchange.HTTP_URI">
-        <constant>{{camunda-uri}}</constant>
-      </setHeader>
-      <setHeader headerName="Exchange.HTTP_PATH">
-        <constant>/engine-rest/process-definition/key/DrToDoLittle/start</constant>
-      </setHeader>
-      <setHeader headerName="CamelHttpMethod">
-        <constant>POST</constant>
-      </setHeader>
-      <setHeader headerName="Exchange.CONTENT_TYPE">
-        <constant>application/json</constant>
-      </setHeader>
-      <to uri="http4://setFromHeader" />
-    </route>
-	<route>
-		<from uri="direct:registeruser" />
-		<setHeader headerName="Exchange.HTTP_RESPONSE_CODE">
-			<constant>204</constant>
-		</setHeader>
-	</route>
-  </camelContext>
+				</groovy>
+			</setHeader>
+			<to uri="http4://setFromHeader" />
+			<process ref="generateToDoJSONProcessor" />
+		</route>
+		<route>
+			<from uri="direct:noanswer" />
+			<setHeader headerName="Exchange.HTTP_RESPONSE_CODE">
+				<constant>204</constant>
+			</setHeader>
+		</route>
+		<route>
+			<from uri="direct:deletetodo" />
+			<setHeader headerName="Exchange.HTTP_URI">
+				<constant>{{camunda-uri}}</constant>
+			</setHeader>
+			<setHeader headerName="Exchange.HTTP_PATH">
+				<simple>/engine-rest/process-instance/${header.id}</simple>
+			</setHeader>
+			<setHeader headerName="CamelHttpMethod">
+				<constant>DELETE</constant>
+			</setHeader>
+			<to uri="http4://setFromHeader" />
+			<setHeader headerName="Exchange.HTTP_RESPONSE_CODE">
+				<constant>204</constant>
+			</setHeader>
+		</route>
+		<route>
+			<from uri="direct:extracttaskid" />
+			<setHeader headerName="Exchange.HTTP_URI">
+				<constant>{{camunda-uri}}</constant>
+			</setHeader>
+			<setHeader headerName="Exchange.HTTP_PATH">
+				<simple>/engine-rest/task</simple>
+			</setHeader>
+			<setHeader headerName="Exchange.HTTP_QUERY">
+				<simple>processInstanceId=${header.id}</simple>
+			</setHeader>
+			<setHeader headerName="CamelHttpMethod">
+				<constant>GET</constant>
+			</setHeader>
+			<to uri="http4://setFromHeader" />
+			<process ref="extractTaskIdProcessor" />
+		</route>
+		<route>
+			<from uri="direct:tododone" />
+			<to uri="direct:extracttaskid" />
+			<setHeader headerName="Exchange.HTTP_URI">
+				<constant>{{camunda-uri}}</constant>
+			</setHeader>
+			<setHeader headerName="Exchange.HTTP_PATH">
+				<simple>/engine-rest/task/${header.taskid}/complete</simple>
+			</setHeader>
+			<setHeader headerName="CamelHttpMethod">
+				<constant>POST</constant>
+			</setHeader>
+			<setHeader headerName="Exchange.CONTENT_TYPE">
+				<constant>application/json</constant>
+			</setHeader>
+			<setBody>
+				<constant>{"variables": {"done": {"value" : true}}}</constant>
+			</setBody>
+			<to uri="http4://setFromHeader" />
+			<setHeader headerName="Exchange.HTTP_RESPONSE_CODE">
+				<constant>204</constant>
+			</setHeader>
+		</route>
+		<route>
+			<from uri="direct:createtodo" />
+			<process ref="extractuserfromtoken" />
+			<process ref="generateCreateProcessJSONProcessor" />
+			<setHeader headerName="Exchange.HTTP_URI">
+				<constant>{{camunda-uri}}</constant>
+			</setHeader>
+			<setHeader headerName="Exchange.HTTP_PATH">
+				<constant>/engine-rest/process-definition/key/DrToDoLittle/start</constant>
+			</setHeader>
+			<setHeader headerName="CamelHttpMethod">
+				<constant>POST</constant>
+			</setHeader>
+			<setHeader headerName="Exchange.CONTENT_TYPE">
+				<constant>application/json</constant>
+			</setHeader>
+			<to uri="http4://setFromHeader" />
+		</route>
+		<route>
+			<from uri="direct:registeruser" />
+			<setHeader headerName="Exchange.HTTP_RESPONSE_CODE">
+				<constant>204</constant>
+			</setHeader>
+		</route>
+	</camelContext>
 </blueprint>

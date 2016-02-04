@@ -20,7 +20,7 @@ import io.jsonwebtoken.SignatureAlgorithm
 public class ExtractUserFromToken implements Processor {
 
 
-	private String secret = "camundaunddrtodolittlesecret"
+	private String secret = "changeit"
 
 
 	/* (non-Javadoc)

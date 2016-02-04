@@ -5,6 +5,7 @@
   <cm:property-placeholder persistent-id="drtodolittle" update-strategy="reload">
     <cm:default-properties>
       <cm:property name="camunda-uri" value="http://localhost:10080" />
+      <cm:property name="jsonwebtokensecret" value="changeit" />
     </cm:default-properties>
   </cm:property-placeholder>
   <!-- to setup camel servlet with OSGi HttpService -->
@@ -21,8 +22,12 @@
   <bean class="de.drtodolittle.processor.GenerateCreateProcessJSON" id="generateCreateProcessJSONProcessor" />
   <bean class="de.drtodolittle.aggregate.ProcessInstanceVariables" id="processInstanceVariablesAggregationStrategy" />
   <bean class="de.drtodolittle.processor.ExtractUserNameAndPassword" id="extractUserNameAndPassword" />
-  <bean class="de.drtodolittle.processor.CreateJsonWebToken" id="createjsonwebtoken" />
-  <bean class="de.drtodolittle.processor.ExtractUserFromToken" id="extractuserfromtoken" />
+  <bean class="de.drtodolittle.processor.CreateJsonWebToken" id="createjsonwebtoken">
+	<property name="secret" ref="jsonwebtokensecret" />
+  </bean>
+  <bean class="de.drtodolittle.processor.ExtractUserFromToken" id="extractuserfromtoken">
+	<property name="secret" ref="jsonwebtokensecret" />
+  </bean>
   <bean class="de.drtodolittle.processor.ExtractTopic" id="extracttopic" />
 
   <camelContext xmlns="http://camel.apache.org/schema/blueprint">

@@ -37,6 +37,10 @@
         <to uri="direct:ping" />
       </get>
     </rest>
+	<rest path="/users">
+		<post uri="/" produces="application/json">
+			<to uri="direct:registeruser" />
+		</post>
     <rest path="/todos">
       <get uri="/" produces="application/json">
         <to uri="direct:gettodos" />
@@ -240,5 +244,11 @@
       </setHeader>
       <to uri="http4://setFromHeader" />
     </route>
+	<route>
+		<from uri="direct:registeruser" />
+		<setHeader headerName="Exchange.HTTP_RESPONSE_CODE">
+			<constant>204</constant>
+		</setHeader>
+	</route>
   </camelContext>
 </blueprint>

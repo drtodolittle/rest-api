@@ -34,4 +34,8 @@ public class CreateJsonWebToken implements Processor {
 		exchange.getIn().setBody('{"token": "' + token + '"}')
 	}
 
+	public void setSecret(String secret) {
+		this.secret=secret
+	}
+	
 }

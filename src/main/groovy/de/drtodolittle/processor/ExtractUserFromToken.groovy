@@ -34,4 +34,8 @@ public class ExtractUserFromToken implements Processor {
     exchange.getIn().setHeader("username", user)
 	}
 
+	public void setSecret(String secret) {
+		this.secret=secret
+	}
+
 }

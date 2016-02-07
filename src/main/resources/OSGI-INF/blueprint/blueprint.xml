@@ -30,7 +30,7 @@
 	<bean class="de.drtodolittle.processor.GenerateCreateProcessJSON" id="generateCreateProcessJSONProcessor" />
 	<bean class="de.drtodolittle.aggregate.ProcessInstanceVariables" id="processInstanceVariablesAggregationStrategy" />
 	<bean class="de.drtodolittle.processor.ExtractUserNameAndPassword" id="extractUserNameAndPassword" />
-	<bean class="de.drtodolittle.processor.CreateJsonWebToken" id="createjsonwebtoken">
+	<bean class="de.drtodolittle.processor.CreateJsonWebToken" id="createjsonwebtoken" />
 	<bean class="de.drtodolittle.processor.ExtractEmailAndProcessId" id="extractemailandprocessid" />
 		<property name="secret" value="${userregistrytokensecret}" />
 	</bean>

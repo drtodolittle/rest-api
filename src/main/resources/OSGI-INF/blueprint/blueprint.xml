@@ -279,7 +279,7 @@
 			<setHeader headerName="from"><constant>registration@drtodolittle.de</constant></setHeader>
 			<setHeader headerName="subject"><constant>Email validation Dr ToDo Little</constant></setHeader>
 			<to uri="velocity:templates/generateemail.vm" />
-			<to uri="smtp://{{smtp.host}}?username={{smtp.username}}&amp;password={{smtp.password}}" />
+			<to uri="smtp://{{smtp.host}}?username={{smtp.username}}&amp;password={{smtp.password}}&amp;contentType=text/html" />
 		</route>
 		
 	</camelContext>

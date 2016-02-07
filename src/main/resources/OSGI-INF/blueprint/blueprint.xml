@@ -271,6 +271,7 @@
 		</route>
 		<route id="emailvalidation">
 			<from uri="file:data/import/emailvalidation" />
+			<convertBodyTo type="java.lang.String"/>
 			<process ref="extractemailandprocessid" />
 			<setHeader headerName="to"><simple>${header.email}</simple></setHeader>
 			<setHeader headerName="from"><constant>registration@drtodolittle.de</constant></setHeader>

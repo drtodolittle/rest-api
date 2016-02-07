@@ -273,7 +273,7 @@
 			</setHeader>
 		</route>
 		<route id="emailvalidation">
-			<from uri="file:data/import/emailvalidation?delete=true" />
+			<from uri="file:/var/drtodolittle/emailvalidation?delete=true" />
 			<convertBodyTo type="java.lang.String"/>
 			<process ref="extractemailandprocessid" />
 			<setHeader headerName="to"><simple>${header.email}</simple></setHeader>

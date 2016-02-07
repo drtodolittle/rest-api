@@ -6,6 +6,10 @@
 		<cm:default-properties>
 			<cm:property name="camunda-uri" value="http://localhost:10080" />
 			<cm:property name="jsonwebtokensecret" value="changeit" />
+			<cm:property name="userregistrytokensecret" value="changeit" />
+			<cm:property name="smtp.host" value="hostname" />
+			<cm:property name="smtp.username" value="username" />
+			<cm:property name="smtp.password" value="password" />
 		</cm:default-properties>
 	</cm:property-placeholder>
 	<!-- to setup camel servlet with OSGi HttpService -->
@@ -23,7 +27,8 @@
 	<bean class="de.drtodolittle.aggregate.ProcessInstanceVariables" id="processInstanceVariablesAggregationStrategy" />
 	<bean class="de.drtodolittle.processor.ExtractUserNameAndPassword" id="extractUserNameAndPassword" />
 	<bean class="de.drtodolittle.processor.CreateJsonWebToken" id="createjsonwebtoken">
-		<property name="secret" value="${jsonwebtokensecret}" />
+	<bean class="de.drtodolittle.processor.ExtractEmailAndProcessId" id="extractemailandprocessid" />
+		<property name="secret" value="${userregistrytokensecret}" />
 	</bean>
 	<bean class="de.drtodolittle.processor.ExtractUserFromToken" id="extractuserfromtoken">
 		<property name="secret" value="${jsonwebtokensecret}" />
@@ -41,6 +46,9 @@
 			<post uri="/" produces="application/json">
 				<to uri="direct:registeruser" />
 			</post>
+			<get uri="/validate/{token}" >
+				<to uri="direct:validateemail" />
+			</get>
 		</rest>
 		<rest path="/todos">
 			<get uri="/" produces="application/json">
@@ -251,5 +259,21 @@
 				<constant>204</constant>
 			</setHeader>
 		</route>
+		<route>
+			<from uri="direct:validateemail" />
+			<setHeader headerName="Exchange.HTTP_RESPONSE_CODE">
+				<constant>204</constant>
+			</setHeader>
+		</route>
+		<route id="emailvalidation">
+			<from uri="file:data/import/emailvalidation" />
+			<process ref="extractemailandprocessid" />
+			<setHeader headerName="to"><simple>${header.email}</simple></setHeader>
+			<setHeader headerName="from"><constant>registration@drtodolittle.de</constant></setHeader>
+			<setHeader headerName="subject"><constant>Email validation Dr ToDo Little</constant></setHeader>
+			<to uri="velocity:templates/generateemail.vm" />
+			<to uri="smtp://{{smtp.server}}?username={{smtp.username}}&amp;password={{smtp.password}}" />
+		</route>
+		
 	</camelContext>
 </blueprint>

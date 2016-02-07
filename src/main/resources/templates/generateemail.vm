@@ -1,0 +1,9 @@
+Hello ${headers.firstname},
+
+thank you for interest in Dr ToDo Little. Your account will be activated after you click the following link.
+
+<a href="${headers.drtodolittleurl}/api/users/validate/${headers.token}">Validate email</a>
+
+Bye,
+
+your Dr ToDo Little

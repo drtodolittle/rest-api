@@ -14,6 +14,7 @@
 			<cm:property name="smtp.host" value="hostname" />
 			<cm:property name="smtp.username" value="username" />
 			<cm:property name="smtp.password" value="password" />
+			<cm:property name="drtodolittleurl" value="http://www.drtodolittle.de" />
 		</cm:default-properties>
 	</cm:property-placeholder>
 	<!-- to setup camel servlet with OSGi HttpService -->
@@ -278,7 +279,9 @@
 			<setHeader headerName="to"><simple>${header.email}</simple></setHeader>
 			<setHeader headerName="from"><constant>registration@drtodolittle.de</constant></setHeader>
 			<setHeader headerName="subject"><constant>Email validation Dr ToDo Little</constant></setHeader>
+			<setHeader headerName="drtodolittleurl"><constant>{{drtodolittleurl}}</constant></setHeader>
 			<to uri="velocity:templates/generateemail.vm" />
+			<removeHeaders pattern="*" excludePattern="to|from|subject"/>
 			<to uri="smtp://{{smtp.host}}?username={{smtp.username}}&amp;password={{smtp.password}}&amp;contentType=text/html" />
 		</route>
 		

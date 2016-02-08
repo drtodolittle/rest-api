@@ -29,6 +29,7 @@
 	<bean class="de.drtodolittle.processor.ExtractTaskId" id="extractTaskIdProcessor" />
 	<bean class="de.drtodolittle.processor.GenerateToDoJSON" id="generateToDoJSONProcessor" />
 	<bean class="de.drtodolittle.processor.GenerateCreateProcessJSON" id="generateCreateProcessJSONProcessor" />
+	<bean class="de.drtodolittle.processor.GenerateCreateProcessUserRegistryJSON" id="generateCreateProcessUserRegistryJSON" />
 	<bean class="de.drtodolittle.aggregate.ProcessInstanceVariables" id="processInstanceVariablesAggregationStrategy" />
 	<bean class="de.drtodolittle.processor.ExtractUserNameAndPassword" id="extractUserNameAndPassword" />
 	<bean class="de.drtodolittle.processor.CreateJsonWebToken" id="createjsonwebtoken">
@@ -262,6 +263,21 @@
 		</route>
 		<route>
 			<from uri="direct:registeruser" />
+			<process ref="generateCreateProcessUserRegistryJSON" />
+			<setHeader headerName="Exchange.HTTP_URI">
+				<constant>{{camunda-uri}}</constant>
+			</setHeader>
+			<setHeader headerName="Exchange.HTTP_PATH">
+				<constant>/engine-rest/process-definition/key/UserRegistration/start</constant>
+			</setHeader>
+			<setHeader headerName="CamelHttpMethod">
+				<constant>POST</constant>
+			</setHeader>
+			<setHeader headerName="Exchange.CONTENT_TYPE">
+				<constant>application/json</constant>
+			</setHeader>
+			<to uri="http4://setFromHeader" />
+			
 			<setHeader headerName="Exchange.HTTP_RESPONSE_CODE">
 				<constant>204</constant>
 			</setHeader>

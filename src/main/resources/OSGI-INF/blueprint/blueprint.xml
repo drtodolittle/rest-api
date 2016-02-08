@@ -35,11 +35,14 @@
 	<bean class="de.drtodolittle.processor.CreateJsonWebToken" id="createjsonwebtoken">
 		<property name="secret" value="${jsonwebtokensecret}" />
 	</bean>
+	<bean class="de.drtodolittle.processor.ExtractUserFromToken" id="extractuserfromtoken">
+		<property name="secret" value="${jsonwebtokensecret}" />
+	</bean>
 	<bean class="de.drtodolittle.processor.ExtractEmailAndProcessId" id="extractemailandprocessid" >
 		<property name="secret" value="${userregistrytokensecret}" />
 	</bean>
-	<bean class="de.drtodolittle.processor.ExtractUserFromToken" id="extractuserfromtoken">
-		<property name="secret" value="${jsonwebtokensecret}" />
+	<bean class="de.drtodolittle.processor.ExtractUserFromLink" id="extractUserName" >
+		<property name="secret" value="${userregistrytokensecret}" />
 	</bean>
 	<bean class="de.drtodolittle.processor.ExtractTopic" id="extracttopic" />
 
@@ -284,6 +287,28 @@
 		</route>
 		<route>
 			<from uri="direct:validateemail" />
+			<process ref="extractUserName" />
+			<setBody>
+				<simple>
+					{
+						"messageName": "mailverification",
+						"businessKey": "${header.username}"
+					}
+				</simple>
+			</setBody>
+			<setHeader headerName="Exchange.HTTP_URI">
+				<constant>{{camunda-uri}}</constant>
+			</setHeader>
+			<setHeader headerName="Exchange.HTTP_PATH">
+				<constant>/engine-rest/message</constant>
+			</setHeader>
+			<setHeader headerName="CamelHttpMethod">
+				<constant>POST</constant>
+			</setHeader>
+			<setHeader headerName="Exchange.CONTENT_TYPE">
+				<constant>application/json</constant>
+			</setHeader>
+			<to uri="http4://setFromHeader" />
 			<setHeader headerName="Exchange.HTTP_RESPONSE_CODE">
 				<constant>204</constant>
 			</setHeader>

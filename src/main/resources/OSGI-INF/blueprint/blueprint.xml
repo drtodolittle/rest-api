@@ -120,6 +120,7 @@
 		</route>
 		<route>
 			<from uri="direct:login" />
+			<to uri="log:request?showAll=true" />
 			<removeHeaders pattern="*" />
 			<process ref="extractUserNameAndPassword" />
 			<setHeader headerName="Exchange.HTTP_URI">

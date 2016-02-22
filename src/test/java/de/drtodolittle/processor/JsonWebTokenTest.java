@@ -20,12 +20,12 @@ import io.jsonwebtoken.SignatureException;
  * @author Guenther_D
  *
  */
-public class CreateJsonWebTokenTest {
+public class JsonWebTokenTest {
 
 	@Test
 	public void testCreateToken() {
 		Key key = new SecretKeySpec("dirk".getBytes(), SignatureAlgorithm.ES256.getJcaName());
-		
+	
 		String s = Jwts.builder().setSubject("dirk").signWith(SignatureAlgorithm.HS512, key).compact();
 		System.out.println(s);
 	}

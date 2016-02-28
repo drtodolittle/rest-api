@@ -17,6 +17,9 @@ import org.apache.camel.Processor
 class ExtractTaskId implements Processor {
 	
      public void process(Exchange exchange) {
+		if (!exchange.in.body) {
+			throw new IllegalArgumentException("Body should not be null")
+		}
         def input = exchange.getIn().getBody()
         def jsonSlurper = new JsonSlurper()
         def tasks = jsonSlurper.parse(input)

@@ -17,6 +17,9 @@ import org.apache.camel.Processor
 class ExtractTopic implements Processor {
 
      public void process(Exchange exchange) {
+		if (!exchange.in.body) {
+			throw new IllegalArgumentException("Body should not be null")
+		}
         def input = exchange.getIn().getBody()
         def jsonSlurper = new JsonSlurper()
         def task = jsonSlurper.parse(input)

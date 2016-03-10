@@ -120,6 +120,15 @@
 		</route>
 		<route>
 			<from uri="direct:login" />
+			<onException>
+				<exception>java.lang.IllegalArgumentException</exception>
+				<handled>
+					<constant>true</constant>
+				</handled>
+				<setHeader headerName="Exchange.HTTP_RESPONSE_CODE">
+					<constant>401</constant>
+				</setHeader>
+			</onException>
 			<to uri="log:request?showAll=true" />
 			<removeHeaders pattern="*" />
 			<process ref="extractUserNameAndPassword" />

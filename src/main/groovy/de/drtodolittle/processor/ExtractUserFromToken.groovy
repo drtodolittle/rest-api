@@ -28,10 +28,13 @@ public class ExtractUserFromToken implements Processor {
 	 */
 
 	public void process(Exchange exchange) throws Exception {
-		String token = ((String) exchange.getIn().getHeader("Authorization")).split(" ")[1]
-		Key key = new SecretKeySpec(secret.getBytes(), SignatureAlgorithm.ES256.getJcaName())
-    String user = Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody().getSubject()
-    exchange.getIn().setHeader("username", user)
+		def authorization = exchange.in.headers.Authorization
+		if (authorization != null) {
+			def token = authorization.split(" ")[1]
+			Key key = new SecretKeySpec(secret.getBytes(), SignatureAlgorithm.ES256.getJcaName())
+			String user = Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody().getSubject()
+			exchange.in.setHeader("username", user)
+		}
 	}
 
 	public void setSecret(String secret) {

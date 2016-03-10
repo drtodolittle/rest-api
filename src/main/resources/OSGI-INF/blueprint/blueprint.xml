@@ -150,6 +150,7 @@
 		<route>
 			<from uri="direct:gettodos" />
 			<process ref="extractuserfromtoken" />
+			
 			<setHeader headerName="Exchange.HTTP_URI">
 				<constant>{{camunda-uri}}</constant>
 			</setHeader>

@@ -158,6 +158,17 @@
 		</route>
 		<route>
 			<from uri="direct:gettodos" />
+			<onException>
+				<exception>java.lang.IllegalArgumentException</exception>
+				<exception>io.jsonwebtoken.SignatureException</exception>
+				<exception>io.jsonwebtoken.MalformedJwtException</exception>
+				<handled>
+					<constant>true</constant>
+				</handled>
+				<setHeader headerName="Exchange.HTTP_RESPONSE_CODE">
+					<constant>401</constant>
+				</setHeader>
+			</onException>
 			<process ref="extractuserfromtoken" />
 			
 			<setHeader headerName="Exchange.HTTP_URI">

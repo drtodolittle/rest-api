@@ -40,7 +40,7 @@ class ExtractProcessInstanceIdsTest {
 		def ctx = new DefaultCamelContext()
 		def exchange = new DefaultExchange(ctx)	
 		exchange.in.body = ""
-        def processor = new ExtractProcessInstanceIds()
+        def processor = new ValidateBodyProcessor(new ExtractProcessInstanceIds())
 		shouldFail java.lang.IllegalArgumentException, {
 			processor.process(exchange)
 		}
@@ -50,7 +50,7 @@ class ExtractProcessInstanceIdsTest {
     void testWithNoUser() {
 		def ctx = new DefaultCamelContext()
 		def exchange = new DefaultExchange(ctx)	
-        def processor = new ExtractProcessInstanceIds()
+        def processor = new ValidateBodyProcessor(new ExtractProcessInstanceIds())
 		shouldFail java.lang.IllegalArgumentException, {
 			processor.process(exchange)
 		}

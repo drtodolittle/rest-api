@@ -25,7 +25,7 @@
 		<property name="servlet" ref="camelServlet"/>
 	</bean>
 	<bean class="org.apache.camel.component.servlet.CamelHttpTransportServlet" id="camelServlet"/>
-	<bean class="de.drtodolittle.processor.ExtractProcessInstanceIds" id="extractProcessIdsProcessor" />
+
 	<bean class="de.drtodolittle.processor.ExtractTaskId" id="extractTaskIdProcessor" />
 	<bean class="de.drtodolittle.processor.GenerateToDoJSON" id="generateToDoJSONProcessor" />
 	<bean class="de.drtodolittle.processor.GenerateCreateProcessJSON" id="generateCreateProcessJSONProcessor" />
@@ -38,6 +38,7 @@
 	<bean class="de.drtodolittle.processor.ExtractUserFromToken" id="extractuserfromtoken">
 		<property name="secret" value="${jsonwebtokensecret}" />
 	</bean>
+	
 	<bean class="de.drtodolittle.processor.ExtractEmailAndProcessId" id="extractemailandprocessid" >
 		<property name="secret" value="${userregistrytokensecret}" />
 	</bean>
@@ -46,6 +47,11 @@
 	</bean>
 	<bean class="de.drtodolittle.processor.ExtractTopic" id="extracttopic" />
 
+	
+	<bean class="de.drtodolittle.processor.ValidateBodyProcessor" id="extractProcessIdsProcessor">
+		<constructor><bean class="de.drtodolittle.processor.ExtractProcessInstanceIds" /></constructor>
+	</bean>
+	
 	<camelContext xmlns="http://camel.apache.org/schema/blueprint">
 		<restConfiguration bindingMode="off" component="servlet" contextPath="/api" enableCORS="true"/>
 		<rest path="/ping">

@@ -49,7 +49,7 @@
 
 	
 	<bean class="de.drtodolittle.processor.ValidateBodyProcessor" id="extractProcessIdsProcessor">
-		<constructor><bean class="de.drtodolittle.processor.ExtractProcessInstanceIds" /></constructor>
+		<constructor-arg><bean class="de.drtodolittle.processor.ExtractProcessInstanceIds" /></constructor-arg>
 	</bean>
 	
 	<camelContext xmlns="http://camel.apache.org/schema/blueprint">

@@ -19,6 +19,9 @@ class ValidateBodyProcessor implements Processor {
 	Processor processor;
 	
 	public ValidateBodyProcessor(Processor processor) {
+		if (processor == null) {
+			throw new IllegalArgumentException("Processor should not be null")
+		}
 		this.processor = processor
 	}
 	

@@ -19,31 +19,32 @@ import org.apache.camel.Processor
 class GenerateCreateProcessJSON implements Processor{
 
     public void process(Exchange exchange) {
-       def input = exchange.in.body
-       def username = exchange.in.headers.username
-       def jsonSlurper = new JsonSlurper()
-       def vars = jsonSlurper.parse(input)
-
-
-
-        def builder = new groovy.json.JsonBuilder()
-        builder {
-            variables {
-                topic {
-                    value vars.topic
-                    type 'String'
+		def input = exchange.in.body
+		def username = exchange.in.headers.username
+		if (username == null || username.length() == 0) {
+			throw new IllegalArgumentException("Username should not be null")
 		}
-		done {
-                    value false
-                    type 'Boolean'
+		def jsonSlurper = new JsonSlurper()
+		def vars = jsonSlurper.parse(input)
+
+		def builder = new groovy.json.JsonBuilder()
+		builder {
+			variables {
+				topic {
+					value vars.topic
+					type 'String'
+				}
+				done {
+					value false
+					type 'Boolean'
+				}
+				startedby {
+					value username
+					type 'String'
+				}
+			}
+			businessKey username
 		}
-		startedby {
-                    value username
-                    type 'String'
-		}
-            }
-            businessKey username
-	}
 
         exchange.in.body = builder.toString()
      }

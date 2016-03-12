@@ -34,26 +34,5 @@ class ExtractProcessInstanceIdsTest {
 		processor.process(exchange)
 		assertEquals(["anId1", "anId2"], exchange.in.headers.processIds)
 	}
-
-    @Test
-    void testWithEmptyBody() {
-		def ctx = new DefaultCamelContext()
-		def exchange = new DefaultExchange(ctx)	
-		exchange.in.body = ""
-        def processor = new ValidateBodyProcessor(new ExtractProcessInstanceIds())
-		shouldFail java.lang.IllegalArgumentException, {
-			processor.process(exchange)
-		}
-	}
-
-    @Test
-    void testWithNoUser() {
-		def ctx = new DefaultCamelContext()
-		def exchange = new DefaultExchange(ctx)	
-        def processor = new ValidateBodyProcessor(new ExtractProcessInstanceIds())
-		shouldFail java.lang.IllegalArgumentException, {
-			processor.process(exchange)
-		}
-	}
 	
 }

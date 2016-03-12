@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"            
-			xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.1.0"           
-			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"           
-			xsi:schemaLocation="http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd
-			                    http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.1.0 http://aries.apache.org/schemas/blueprint-cm/blueprint-cm-1.1.0.xsd
-								http://camel.apache.org/schema/blueprint http://camel.apache.org/schema/blueprint/camel-blueprint.xsd">
+		xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.1.0"           
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"           
+		xsi:schemaLocation="http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd
+		http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.1.0 http://aries.apache.org/schemas/blueprint-cm/blueprint-cm-1.1.0.xsd
+		http://camel.apache.org/schema/blueprint http://camel.apache.org/schema/blueprint/camel-blueprint.xsd">
 
 	<cm:property-placeholder persistent-id="drtodolittle" update-strategy="reload">
 		<cm:default-properties>
@@ -26,32 +26,46 @@
 	</bean>
 	<bean class="org.apache.camel.component.servlet.CamelHttpTransportServlet" id="camelServlet"/>
 
-	<bean class="de.drtodolittle.processor.ExtractTaskId" id="extractTaskIdProcessor" />
-	<bean class="de.drtodolittle.processor.GenerateToDoJSON" id="generateToDoJSONProcessor" />
-	<bean class="de.drtodolittle.processor.GenerateCreateProcessJSON" id="generateCreateProcessJSONProcessor" />
-	<bean class="de.drtodolittle.processor.GenerateCreateProcessUserRegistryJSON" id="generateCreateProcessUserRegistryJSON" />
+	<bean class="de.drtodolittle.processor.ValidateBodyProcessor" id="extractTaskIdProcessor">
+		<argument><bean class="de.drtodolittle.processor.ExtractTaskId" /></argument>
+	</bean>
+	<bean class="de.drtodolittle.processor.ValidateBodyProcessor" id="generateToDoJSONProcessor">
+		<argument><bean class="de.drtodolittle.processor.GenerateToDoJSON" /></argument>
+	</bean>
+	<bean class="de.drtodolittle.processor.ValidateBodyProcessor" id="generateCreateProcessJSONProcessor">
+		<argument><bean class="de.drtodolittle.processor.GenerateCreateProcessJSON" /></argument>
+	</bean>
+	<bean class="de.drtodolittle.processor.ValidateBodyProcessor" id="generateCreateProcessUserRegistryJSON">
+		<argument><bean class="de.drtodolittle.processor.GenerateCreateProcessUserRegistryJSON" /></argument>
+	</bean>
 	<bean class="de.drtodolittle.aggregate.ProcessInstanceVariables" id="processInstanceVariablesAggregationStrategy" />
-	<bean class="de.drtodolittle.processor.ExtractUserNameAndPassword" id="extractUserNameAndPassword" />
+	<bean class="de.drtodolittle.processor.ValidateBodyProcessor" id="extractUserNameAndPassword">
+		<argument><bean class="de.drtodolittle.processor.ExtractUserNameAndPassword" /></argument>
+	</bean>
 	<bean class="de.drtodolittle.processor.CreateJsonWebToken" id="createjsonwebtoken">
 		<property name="secret" value="${jsonwebtokensecret}" />
 	</bean>
 	<bean class="de.drtodolittle.processor.ExtractUserFromToken" id="extractuserfromtoken">
 		<property name="secret" value="${jsonwebtokensecret}" />
 	</bean>
-	
-	<bean class="de.drtodolittle.processor.ExtractEmailAndProcessId" id="extractemailandprocessid" >
-		<property name="secret" value="${userregistrytokensecret}" />
+	<bean class="de.drtodolittle.processor.ValidateBodyProcessor" id="extractemailandprocessid">
+		<argument>
+			<bean class="de.drtodolittle.processor.ExtractEmailAndProcessId" >
+				<property name="secret" value="${userregistrytokensecret}" />
+			</bean>
+		</argument>
 	</bean>
 	<bean class="de.drtodolittle.processor.ExtractUserFromLink" id="extractUserName" >
 		<property name="secret" value="${userregistrytokensecret}" />
 	</bean>
-	<bean class="de.drtodolittle.processor.ExtractTopic" id="extracttopic" />
+	<bean class="de.drtodolittle.processor.ValidateBodyProcessor" id="extracttopic">
+		<argument><bean class="de.drtodolittle.processor.ExtractTopic" /></argument>
+	</bean>
 
-	
 	<bean class="de.drtodolittle.processor.ValidateBodyProcessor" id="extractProcessIdsProcessor">
 		<argument><bean class="de.drtodolittle.processor.ExtractProcessInstanceIds" /></argument>
 	</bean>
-	
+
 	<camelContext xmlns="http://camel.apache.org/schema/blueprint">
 		<restConfiguration bindingMode="off" component="servlet" contextPath="/api" enableCORS="true"/>
 		<rest path="/ping">
@@ -176,7 +190,7 @@
 				</setHeader>
 			</onException>
 			<process ref="extractuserfromtoken" />
-			
+
 			<setHeader headerName="Exchange.HTTP_URI">
 				<constant>{{camunda-uri}}</constant>
 			</setHeader>
@@ -308,7 +322,7 @@
 				<constant>application/json</constant>
 			</setHeader>
 			<to uri="http4://setFromHeader" />
-			
+
 			<setHeader headerName="Exchange.HTTP_RESPONSE_CODE">
 				<constant>204</constant>
 			</setHeader>
@@ -319,8 +333,8 @@
 			<setBody>
 				<simple>
 					{
-						"messageName": "mailverification",
-						"businessKey": "${header.username}"
+					"messageName": "mailverification",
+					"businessKey": "${header.username}"
 					}
 				</simple>
 			</setBody>
@@ -353,6 +367,6 @@
 			<removeHeaders pattern="*" excludePattern="to|from|subject"/>
 			<to uri="smtp://{{smtp.host}}?username={{smtp.username}}&amp;password={{smtp.password}}&amp;contentType=text/html" />
 		</route>
-		
+
 	</camelContext>
 </blueprint>

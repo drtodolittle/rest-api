@@ -19,25 +19,4 @@ class ExtractTopicTest {
 		assertEquals('{"value" : "test1", "type": "String"}', exchange.in.headers.updatetopic)
 	}
 
-    @Test
-    void testWithEmptyBody() {
-		def ctx = new DefaultCamelContext()
-		def exchange = new DefaultExchange(ctx)	
-		exchange.in.body = ""
-        def processor = new ExtractTopic()
-		shouldFail java.lang.IllegalArgumentException, {
-			processor.process(exchange)
-		}
-	}
-
-    @Test
-    void testWithNoBody() {
-		def ctx = new DefaultCamelContext()
-		def exchange = new DefaultExchange(ctx)	
-        def processor = new ExtractTopic()
-		shouldFail java.lang.IllegalArgumentException, {
-			processor.process(exchange)
-		}
-	}
-	
 }

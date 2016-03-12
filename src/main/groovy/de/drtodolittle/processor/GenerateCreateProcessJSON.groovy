@@ -18,8 +18,6 @@ import org.apache.camel.Processor
  */
 class GenerateCreateProcessJSON implements Processor{
 
-
-
     public void process(Exchange exchange) {
        def input = exchange.in.body
        def username = exchange.in.headers.username

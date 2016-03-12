@@ -19,26 +19,5 @@ class ExtractUserNameAndPasswordTest {
 		assertEquals("user1", exchange.in.headers.username)
 		assertEquals("username=user1&password=password1", (String)exchange.in.body)
 	}
-
-    @Test
-    void testWithEmptyBody() {
-		def ctx = new DefaultCamelContext()
-		def exchange = new DefaultExchange(ctx)	
-		exchange.in.body = ""
-        def processor = new ExtractUserNameAndPassword()
-		shouldFail java.lang.IllegalArgumentException, {
-			processor.process(exchange)
-		}
-	}
-
-    @Test
-    void testWithNoBody() {
-		def ctx = new DefaultCamelContext()
-		def exchange = new DefaultExchange(ctx)	
-        def processor = new ExtractUserNameAndPassword()
-		shouldFail java.lang.IllegalArgumentException, {
-			processor.process(exchange)
-		}
-	}
 	
 }

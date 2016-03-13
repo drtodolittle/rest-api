@@ -66,5 +66,25 @@ class GenerateCreateProcessJSONTest {
 			processor.process(exchange)
 		}
 	}
+
+    @Test
+    void generateCreateProcessJSONWithEmptyTopic() {
+		def ctx = new DefaultCamelContext()
+		def exchange = new DefaultExchange(ctx)
+		exchange.in.headers.username = "user1"
+		def builder = new groovy.json.JsonBuilder()
+		builder {
+			topic ""
+		}
+
+        exchange.in.body = builder.toString().getBytes()
+        def processor = new GenerateCreateProcessJSON()
+		processor.process(exchange)
+		def jsonSlurper = new JsonSlurper()
+		def result = jsonSlurper.parseText(exchange.in.body)
+		assertEquals "", result.variables.topic.value
+		assertEquals "user1", result.variables.startedby.value
+		assertEquals "user1", result.businessKey	
+	}
 	
 }

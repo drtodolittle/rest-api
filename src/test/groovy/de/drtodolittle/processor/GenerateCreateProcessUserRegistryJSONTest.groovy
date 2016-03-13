@@ -37,5 +37,28 @@ class GenerateCreateProcessUserRegistryJSONTest {
 		assertEquals "password1", result.variables.password.value
 		assertEquals "user1", result.businessKey	
 	}
+
+    @Test
+    void generateCreateProcessUserRegistryJSONWithWrongJSON() {
+		def ctx = new DefaultCamelContext()
+		def exchange = new DefaultExchange(ctx)
+		
+		def builder = new groovy.json.JsonBuilder()
+		builder {
+			test {
+				email "test@test.com"
+				firstname "firstname1"
+				lastname "lastname2"
+				password "password1"
+			}
+		}
+
+        exchange.in.body = builder.toString().getBytes()
+		exchange.in.headers.username = "user1"
+        def processor = new GenerateCreateProcessUserRegistryJSON()
+		shouldFail IllegalArgumentException, {
+			processor.process(exchange)
+		}
+	}
 	
 }

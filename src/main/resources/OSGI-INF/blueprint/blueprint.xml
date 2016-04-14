@@ -110,14 +110,14 @@
 				<constant>Hello, I'm Dr ToDo Little!</constant>
 			</transform>
 		</route>
-		<route id="hipchat-channel">
+		<!--route id="hipchat-channel">
 			<from uri="hipchat://?authToken=bdaYUM6I9I49yJBLhMqN6KYqdieLecwzjlhP3LgB&amp;consumeUsers=@DrToDoLittle" />
 			<setBody>
 				<constant>Hello, I'm Dr ToDo Little!</constant>
 			</setBody>
 			<setHeader headerName="HipchatToUser"><simple>${headers.HipchatFromUser}</simple></setHeader>
 			<to uri="hipchat://?authToken=bdaYUM6I9I49yJBLhMqN6KYqdieLecwzjlhP3LgB" />
-		</route>
+		</route-->
 		<route>
 			<from uri="direct:gettodo" />
 			<to uri="velocity:templates/gettask.vm" />

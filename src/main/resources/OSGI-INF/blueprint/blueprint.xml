@@ -66,6 +66,9 @@
 		<argument><bean class="de.drtodolittle.processor.ExtractProcessInstanceIds" /></argument>
 	</bean>
 
+	<!-- repository for the idempotent consumer -->
+	<bean id="messageRepo" class="org.apache.camel.processor.idempotent.MemoryIdempotentRepository"/>
+
 	<camelContext xmlns="http://camel.apache.org/schema/blueprint">
 		<restConfiguration bindingMode="off" component="servlet" contextPath="/api" enableCORS="true"/>
 		<rest path="/ping">
@@ -110,14 +113,17 @@
 				<constant>Hello, I'm Dr ToDo Little!</constant>
 			</transform>
 		</route>
-		<!--route id="hipchat-channel">
-			<from uri="hipchat://?authToken=bdaYUM6I9I49yJBLhMqN6KYqdieLecwzjlhP3LgB&amp;consumeUsers=@DrToDoLittle" />
-			<setBody>
-				<constant>Hello, I'm Dr ToDo Little!</constant>
-			</setBody>
-			<setHeader headerName="HipchatToUser"><simple>${headers.HipchatFromUser}</simple></setHeader>
-			<to uri="hipchat://?authToken=bdaYUM6I9I49yJBLhMqN6KYqdieLecwzjlhP3LgB" />
-		</route-->
+		<route id="hipchat-channel">
+			<from uri="hipchat://?authToken=EbDnYQVtVTye72hT8eXWGEBqt4zwMbQy9Oq7OEHR&amp;consumeUsers=@DrToDoLittle" />
+			<idempotentConsumer messageIdRepositoryRef="messageRepo">
+				<simple>${in.header.HipchatMessageDate} ${in.header.HipchatFromUser}</simple>			
+				<setBody>
+					<constant>Hello, I'm Dr ToDo Little! How are you</constant>
+				</setBody>
+				<setHeader headerName="HipchatToUser"><simple>${headers.HipchatFromUser}</simple></setHeader>
+				<to uri="hipchat://?authToken=EbDnYQVtVTye72hT8eXWGEBqt4zwMbQy9Oq7OEHR" />
+			</idempotentConsumer>
+		</route>
 		<route>
 			<from uri="direct:gettodo" />
 			<to uri="velocity:templates/gettask.vm" />

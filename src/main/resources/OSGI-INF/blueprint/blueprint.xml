@@ -114,7 +114,7 @@
 			</transform>
 		</route>
 		<route id="hipchat-channel">
-			<from uri="hipchat://?authToken=EbDnYQVtVTye72hT8eXWGEBqt4zwMbQy9Oq7OEHR&amp;consumeUsers=@DrToDoLittle" />
+			<from uri="hipchat://?authToken=EbDnYQVtVTye72hT8eXWGEBqt4zwMbQy9Oq7OEHR" />
 			<idempotentConsumer messageIdRepositoryRef="messageRepo">
 				<simple>${in.header.HipchatMessageDate} ${in.header.HipchatFromUser}</simple>			
 				<setBody>

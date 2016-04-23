@@ -106,6 +106,9 @@
 			<get uri="/{id}/done" produces="application/json">
 				<to uri="direct:tododone" />
 			</get>
+			<get uri="/{id}/undone" produces="application/json">
+				<to uri="direct:todoundone" />
+			</get>
 			<post uri="/login" produces="application/json">
 				<to uri="direct:login" />
 			</post>
@@ -240,20 +243,6 @@
 			</setHeader>
 		</route>
 		<route>
-			<from uri="direct:deletetodo" />
-			<setHeader headerName="Exchange.HTTP_URI">
-				<constant>{{camunda-uri}}</constant>
-			</setHeader>
-			<setHeader headerName="Exchange.HTTP_PATH">
-				<simple>/engine-rest/process-instance/${header.id}</simple>
-			</setHeader>
-			<setHeader headerName="CamelHttpMethod">
-				<constant>DELETE</constant>
-			</setHeader>
-			<to uri="http4://setFromHeader" />
-			<to uri="direct:noanswer" />
-		</route>
-		<route>
 			<from uri="direct:extracttaskid" />
 			<setHeader headerName="Exchange.HTTP_URI">
 				<constant>{{camunda-uri}}</constant>
@@ -269,6 +258,27 @@
 			</setHeader>
 			<to uri="http4://setFromHeader" />
 			<process ref="extractTaskIdProcessor" />
+		</route>
+		<route>
+			<from uri="direct:deletetodo" />
+			<to uri="direct:extracttaskid" />
+			<setHeader headerName="Exchange.HTTP_URI">
+				<constant>{{camunda-uri}}</constant>
+			</setHeader>
+			<setHeader headerName="Exchange.HTTP_PATH">
+				<simple>/engine-rest/task/${header.taskid}/complete</simple>
+			</setHeader>
+			<setHeader headerName="CamelHttpMethod">
+				<constant>POST</constant>
+			</setHeader>
+			<setHeader headerName="Exchange.CONTENT_TYPE">
+				<constant>application/json</constant>
+			</setHeader>
+			<setBody>
+				<constant>{"variables": {"delete": {"value" : true}}}</constant>
+			</setBody>
+			<to uri="http4://setFromHeader" />
+			<to uri="direct:noanswer" />
 		</route>
 		<route>
 			<from uri="direct:tododone" />
@@ -287,6 +297,27 @@
 			</setHeader>
 			<setBody>
 				<constant>{"variables": {"done": {"value" : true}}}</constant>
+			</setBody>
+			<to uri="http4://setFromHeader" />
+			<to uri="direct:noanswer" />
+		</route>
+		<route>
+			<from uri="direct:todoundone" />
+			<to uri="direct:extracttaskid" />
+			<setHeader headerName="Exchange.HTTP_URI">
+				<constant>{{camunda-uri}}</constant>
+			</setHeader>
+			<setHeader headerName="Exchange.HTTP_PATH">
+				<simple>/engine-rest/task/${header.taskid}/complete</simple>
+			</setHeader>
+			<setHeader headerName="CamelHttpMethod">
+				<constant>POST</constant>
+			</setHeader>
+			<setHeader headerName="Exchange.CONTENT_TYPE">
+				<constant>application/json</constant>
+			</setHeader>
+			<setBody>
+				<constant>{"variables": {"done": {"value" : false}}}</constant>
 			</setBody>
 			<to uri="http4://setFromHeader" />
 			<to uri="direct:noanswer" />

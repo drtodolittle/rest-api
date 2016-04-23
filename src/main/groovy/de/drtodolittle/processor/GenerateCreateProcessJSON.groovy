@@ -38,6 +38,10 @@ class GenerateCreateProcessJSON implements Processor{
 					value false
 					type 'Boolean'
 				}
+				delete {
+					value false
+					type 'Boolean'
+				}
 				startedby {
 					value username
 					type 'String'

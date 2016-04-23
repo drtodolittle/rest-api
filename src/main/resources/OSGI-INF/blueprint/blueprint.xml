@@ -140,9 +140,7 @@
 				<simple>${header.updatetopic}</simple>
 			</setBody>
 			<to uri="http4://setFromHeader" />
-			<setHeader headerName="Exchange.HTTP_RESPONSE_CODE">
-				<constant>204</constant>
-			</setHeader>
+			<to uri="direct:noanswer" />
 		</route>
 		<route>
 			<from uri="direct:login" />
@@ -174,11 +172,11 @@
 				<constant>application/x-www-form-urlencoded</constant>
 			</setHeader>
 			<to uri="http4://setFromHeader?throwExceptionOnFailure=false" />
-			<to uri="log:debuglogin?showHeaders=true" />
 			<choice>
 				<when>
 					<groovy>request.headers.CamelHttpResponseCode == 200</groovy>
 					<process ref="createjsonwebtoken" />
+					<removeHeaders pattern="*" />
 				</when>
 			</choice>
 		</route>
@@ -191,6 +189,7 @@
 				<handled>
 					<constant>true</constant>
 				</handled>
+				<removeHeaders pattern="*" />
 				<setHeader headerName="Exchange.HTTP_RESPONSE_CODE">
 					<constant>401</constant>
 				</setHeader>
@@ -215,6 +214,7 @@
 			<setBody>
 				<simple>[${body}]</simple>
 			</setBody>
+			<removeHeaders pattern="*" />
 		</route>
 		<route>
 			<from uri="direct:gettodovariables" />
@@ -234,6 +234,7 @@
 		</route>
 		<route>
 			<from uri="direct:noanswer" />
+			<removeHeaders pattern="*" />
 			<setHeader headerName="Exchange.HTTP_RESPONSE_CODE">
 				<constant>204</constant>
 			</setHeader>
@@ -250,9 +251,7 @@
 				<constant>DELETE</constant>
 			</setHeader>
 			<to uri="http4://setFromHeader" />
-			<setHeader headerName="Exchange.HTTP_RESPONSE_CODE">
-				<constant>204</constant>
-			</setHeader>
+			<to uri="direct:noanswer" />
 		</route>
 		<route>
 			<from uri="direct:extracttaskid" />
@@ -290,9 +289,7 @@
 				<constant>{"variables": {"done": {"value" : true}}}</constant>
 			</setBody>
 			<to uri="http4://setFromHeader" />
-			<setHeader headerName="Exchange.HTTP_RESPONSE_CODE">
-				<constant>204</constant>
-			</setHeader>
+			<to uri="direct:noanswer" />
 		</route>
 		<route>
 			<from uri="direct:createtodo" />
@@ -312,6 +309,7 @@
 			</setHeader>
 			<to uri="http4://setFromHeader" />
 			<process ref="extractCreatedTaskId" />
+			<removeHeaders pattern="*" />
 		</route>
 		<route>
 			<from uri="direct:registeruser" />

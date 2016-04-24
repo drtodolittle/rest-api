@@ -45,7 +45,7 @@ class GenerateToDoJSON implements Processor {
 			exchange.in.body = JsonOutput.toJson(todo)
 		}
 		else {
-			exchange.in.body = ""
+			exchange.in.body = null
 		}
      }
 }

@@ -206,7 +206,7 @@
 				<constant>/engine-rest/process-instance</constant>
 			</setHeader>
 			<setHeader headerName="Exchange.HTTP_QUERY">
-				<simple>businessKey=${header.username}</simple>
+				<simple>businessKey=${header.username}&amp;variables=delete_eq_false</simple>
 			</setHeader>
 			<to uri="http4://setFromHeader" />
 			<process ref="extractProcessIdsProcessor" />

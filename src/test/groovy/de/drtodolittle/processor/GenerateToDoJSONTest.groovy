@@ -44,6 +44,20 @@ class GenerateToDoJSONTest {
     "serializationConfig": null
   },
   {
+    "id": "someOtherId1",
+    "name": "delete",
+    "type": "Boolean",
+    "variableType": "bolean",
+    "value": false,
+    "processInstanceId": "aProcessInstanceId",
+    "executionId": "68b71c9-e310-11e2-beb0-f0def1557726",
+    "taskId": null,
+    "activityInstanceId": "Task_1:b68b71ca-e310-11e2-beb0-f0def1557726",
+    "caseExecutionId": null,
+    "caseInstanceId": null,
+    "serializationConfig": null
+  },
+  {
     "id": "yetAnotherId",
     "name": "amount",
     "type": "Integer",

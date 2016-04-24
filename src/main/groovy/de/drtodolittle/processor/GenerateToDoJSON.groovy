@@ -21,20 +21,32 @@ class GenerateToDoJSON implements Processor {
         def input = exchange.in.body
         def jsonSlurper = new JsonSlurper()
         def vars = jsonSlurper.parse(input)
-        
-        def todo = [:]
-        
-        todo.put("id", exchange.in.headers.processIds[exchange.properties.CamelSplitIndex])
-        
-        vars.each({
-                if (it.name.equals("topic")) {
-                    todo.put("topic", it.value)
-                }
-                else if (it.name.equals("done")) {
-                    todo.put("done", it.value)
-                }
+		def isDeleted = false
+		
+		vars.each({
+				if (it.name.equals("delete")) {
+					isDeleted = it.value
+				}
             })
-        exchange.in.body = JsonOutput.toJson(todo)
+		if (!isDeleted) {
+			def todo = [:]
+			
+			todo.put("id", exchange.in.headers.processIds[exchange.properties.CamelSplitIndex])
+			
+			vars.each({
+				
+					if (it.name.equals("topic")) {
+						todo.put("topic", it.value)
+					}
+					else if (it.name.equals("done")) {
+						todo.put("done", it.value)
+					}
+				})
+			exchange.in.body = JsonOutput.toJson(todo)
+		}
+		else {
+			exchange.in.body = ""
+		}
      }
 }
 

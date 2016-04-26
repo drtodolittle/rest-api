@@ -87,14 +87,14 @@
 				<to uri="direct:validateemail" />
 			</get>
 		</rest>
-		<rest path="/todos">
-			<get uri="/" produces="application/json" consumes="application/json">
+		<rest path="/todos" consumes="application/json" produces="application/json">
+			<get uri="/">
 				<to uri="direct:gettodos" />
 			</get>
-			<post uri="/" produces="application/json">
+			<post uri="/">
 				<to uri="direct:createtodo" />
 			</post>
-			<get uri="/{id}" produces="application/json">
+			<get uri="/{id}">
 				<to uri="direct:gettodo" />
 			</get>
 			<delete uri="/{id}">
@@ -109,7 +109,7 @@
 			<get uri="/{id}/undone">
 				<to uri="direct:todoundone" />
 			</get>
-			<post uri="/login" produces="application/json">
+			<post uri="/login">
 				<to uri="direct:login" />
 			</post>
 		</rest>

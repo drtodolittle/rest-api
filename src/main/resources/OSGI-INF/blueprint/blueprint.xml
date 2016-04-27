@@ -410,7 +410,7 @@
 		</route>
 		<route id="hipchat">
 			<from uri="direct:hipchat" />
-			<to uri="log:hipchat?showAll=true" />
+			<process><groovy>println exchange.in.body</groovy></process>
 			<setBody><constant>
 			{
 				"color": "green",

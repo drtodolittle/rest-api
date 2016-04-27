@@ -412,14 +412,14 @@
 			<from uri="direct:hipchat" />
 			<convertBodyTo type="java.lang.String"/>
 			<to uri="log:hipchat?showAll=true" />
-			<setBody><constant>
+			<setBody><simple>
 			{
 				"color": "green",
-				"message": "Hello, I'm Dr ToDo Little, what can I do for you",
+				"message": "Hello, I'm Dr ToDo Little, what can I do for you? \n If you want to show your team todos send /drtodolittle list. If you want to create a new todo send /drtodolittle new topic",
 				"notify": false,
 				"message_format": "text"
 			}
-			</constant></setBody>
+			</simple></setBody>
 		</route>
 	</camelContext>
 </blueprint>

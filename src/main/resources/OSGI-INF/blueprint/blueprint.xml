@@ -113,6 +113,11 @@
 				<to uri="direct:login" />
 			</post>
 		</rest>
+		<rest path="/hipchat" consumes="application/json" produces="application/json">
+			<post uri="/">
+				<to uri="direct:hipchat" />
+			</post>
+		</rest>
 		<route>
 			<from uri="direct:ping" />
 			<transform>
@@ -403,6 +408,17 @@
 			<removeHeaders pattern="*" excludePattern="to|from|subject"/>
 			<to uri="smtp://{{smtp.host}}?username={{smtp.username}}&amp;password={{smtp.password}}&amp;contentType=text/html" />
 		</route>
-
+		<route id="hipchat">
+			<from uri="direct:hipchat" />
+			<to uri="log:hipchat?showAll=true" />
+			<setBody><constant>
+			{
+				"color": "green",
+				"message": "Hello, I'm Dr ToDo Little, what can I do for you",
+				"notify": false,
+				"message_format": "text"
+			}
+			</constant></setBody>
+		</route>
 	</camelContext>
 </blueprint>

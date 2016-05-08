@@ -75,7 +75,7 @@
 	<bean id="deadLetterErrorHandler" class="org.apache.camel.builder.DeadLetterChannelBuilder">
 	  <property name="deadLetterUri" value="direct:deadletter"/>
 	</bean>	
-	<camelContext xmlns="http://camel.apache.org/schema/blueprint" errorHandlerRef="deadLetterErrorHandler">
+	<camelContext xmlns="http://camel.apache.org/schema/blueprint" >
 		<restConfiguration bindingMode="off" component="servlet" contextPath="/api" enableCORS="true"/>
 		<rest path="/ping">
 			<get uri="/" >

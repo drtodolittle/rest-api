@@ -426,6 +426,7 @@
 		</route>
 		<route id="deadletter">
 			<from uri="direct:deadletter" />
+			<removeHeaders pattern="*" />
 			<setHeader headerName="Exchange.HTTP_RESPONSE_CODE">
 				<constant>500</constant>
 			</setHeader>

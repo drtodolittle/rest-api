@@ -205,6 +205,11 @@
 					<constant>401</constant>
 				</setHeader>
 			</onException>
+			<choice>
+				<when>
+					<groovy>request.headers.Accept.contains('application/json') || request.headers.Accept.contains('application/javascript') || request.headers.Accept.contains('text/javascript')</groovy>
+					
+			
 			<process ref="extractuserfromtoken" />
 
 			<setHeader headerName="Exchange.HTTP_URI">
@@ -226,6 +231,14 @@
 				<simple>[${body}]</simple>
 			</setBody>
 			<removeHeaders pattern="*" />
+				</when>
+				<otherwise>
+					<removeHeaders pattern="*" />
+					<setHeader headerName="Exchange.HTTP_RESPONSE_CODE">
+					<constant>406</constant>
+				</setHeader>
+				</otherwise>
+			</choice>
 		</route>
 		<route>
 			<from uri="direct:gettodovariables" />

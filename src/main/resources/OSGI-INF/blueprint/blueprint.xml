@@ -68,6 +68,9 @@
 	<bean class="de.drtodolittle.processor.ValidateBodyProcessor" id="extractProcessIdsProcessor">
 		<argument><bean class="de.drtodolittle.processor.ExtractProcessInstanceIds" /></argument>
 	</bean>
+	<bean class="de.drtodolittle.processor.ValidateBodyProcessor" id="mappingPasswordJSON">
+		<argument><bean class="de.drtodolittle.processor.MappingPasswordJSON" /></argument>
+	</bean>
 
 	<!-- repository for the idempotent consumer -->
 	<bean id="messageRepo" class="org.apache.camel.processor.idempotent.MemoryIdempotentRepository"/>
@@ -89,6 +92,9 @@
 			<get uri="/validate/{token}" >
 				<to uri="direct:validateemail" />
 			</get>
+			<put uri="/">
+				<to uri="direct:updatepassword" />
+			</put>
 		</rest>
 		<rest path="/todos" consumes="application/json" produces="application/json">
 			<get uri="/">
@@ -208,29 +214,26 @@
 			<choice>
 				<when>
 					<groovy>request.headers.Accept.contains('application/json') || request.headers.Accept.contains('application/javascript') || request.headers.Accept.contains('text/javascript')</groovy>
-					
-			
-			<process ref="extractuserfromtoken" />
-
-			<setHeader headerName="Exchange.HTTP_URI">
-				<constant>{{camunda-uri}}</constant>
-			</setHeader>
-			<setHeader headerName="Exchange.HTTP_PATH">
-				<constant>/engine-rest/process-instance</constant>
-			</setHeader>
-			<setHeader headerName="Exchange.HTTP_QUERY">
-				<simple>businessKey=${header.username}</simple>
-			</setHeader>
-			<to uri="http4://setFromHeader" />
-			<process ref="extractProcessIdsProcessor" />
-			<split strategyRef="processInstanceVariablesAggregationStrategy">
-				<simple>${header.processIds}</simple>
-				<to uri="direct:gettodovariables" />
-			</split>
-			<setBody>
-				<simple>[${body}]</simple>
-			</setBody>
-			<removeHeaders pattern="*" />
+					<process ref="extractuserfromtoken" />
+					<setHeader headerName="Exchange.HTTP_URI">
+						<constant>{{camunda-uri}}</constant>
+					</setHeader>
+					<setHeader headerName="Exchange.HTTP_PATH">
+						<constant>/engine-rest/process-instance</constant>
+					</setHeader>
+					<setHeader headerName="Exchange.HTTP_QUERY">
+						<simple>businessKey=${header.username}</simple>
+					</setHeader>
+					<to uri="http4://setFromHeader" />
+					<process ref="extractProcessIdsProcessor" />
+					<split strategyRef="processInstanceVariablesAggregationStrategy">
+						<simple>${header.processIds}</simple>
+						<to uri="direct:gettodovariables" />
+					</split>
+					<setBody>
+						<simple>[${body}]</simple>
+					</setBody>
+					<removeHeaders pattern="*" />
 				</when>
 				<otherwise>
 					<removeHeaders pattern="*" />
@@ -363,6 +366,28 @@
 			<process ref="extractCreatedTaskId" />
 			<removeHeaders pattern="*" />
 		</route>
+		<route id="updatepassword" >
+			<from uri="direct:updatepassword" />
+			<process ref="extractuserfromtoken" />
+			<process ref="mappingPasswordJSON" />
+			<setHeader headerName="Exchange.HTTP_URI">
+				<constant>{{camunda-uri}}</constant>
+			</setHeader>
+			<setHeader headerName="Exchange.HTTP_PATH">
+				<constant>/engine-rest/user/${header.username}/credentials</constant>
+			</setHeader>
+			<setHeader headerName="CamelHttpMethod">
+				<constant>PUT</constant>
+			</setHeader>
+			<setHeader headerName="Exchange.CONTENT_TYPE">
+				<constant>application/json</constant>
+			</setHeader>
+			<to uri="http4://setFromHeader" />
+			<removeHeaders pattern="*" />
+			<setHeader headerName="Exchange.HTTP_RESPONSE_CODE">
+				<constant>204</constant>
+			</setHeader>
+		</route>
 		<route>
 			<from uri="direct:registeruser" />
 			<process ref="generateCreateProcessUserRegistryJSON" />
@@ -379,7 +404,7 @@
 				<constant>application/json</constant>
 			</setHeader>
 			<to uri="http4://setFromHeader" />
-
+			<removeHeaders pattern="*" />
 			<setHeader headerName="Exchange.HTTP_RESPONSE_CODE">
 				<constant>204</constant>
 			</setHeader>

@@ -72,9 +72,10 @@
 	<!-- repository for the idempotent consumer -->
 	<bean id="messageRepo" class="org.apache.camel.processor.idempotent.MemoryIdempotentRepository"/>
 
-	<bean id="defaultErrorHandler" class="de.drtodolittle.processor.DefaultErrorHandler" />
-	
-	<camelContext xmlns="http://camel.apache.org/schema/blueprint" errorHandlerRef="defaultErrorHandler">
+	<bean id="deadLetterErrorHandler" class="org.apache.camel.builder.DeadLetterChannelBuilder">
+	  <property name="deadLetterUri" value="direct:deadletter"/>
+	</bean>	
+	<camelContext xmlns="http://camel.apache.org/schema/blueprint" errorHandlerRef="deadLetterErrorHandler">
 		<restConfiguration bindingMode="off" component="servlet" contextPath="/api" enableCORS="true"/>
 		<rest path="/ping">
 			<get uri="/" >
@@ -422,6 +423,13 @@
 				"message_format": "text"
 			}
 			</simple></setBody>
+		</route>
+		<route id="deadletter">
+			<from uri="direct:deadletter" />
+			<setHeader headerName="Exchange.HTTP_RESPONSE_CODE">
+				<constant>500</constant>
+			</setHeader>
+			<setBody><constant>Internal server error</constant></setBody>
 		</route>
 	</camelContext>
 </blueprint>

@@ -72,7 +72,9 @@
 	<!-- repository for the idempotent consumer -->
 	<bean id="messageRepo" class="org.apache.camel.processor.idempotent.MemoryIdempotentRepository"/>
 
-	<camelContext xmlns="http://camel.apache.org/schema/blueprint">
+	<bean id="defaultErrorHandler" class="de.drtodolittle.processor.DefaultErrorHandler" />
+	
+	<camelContext xmlns="http://camel.apache.org/schema/blueprint" errorHandlerRef="defaultErrorHandler">
 		<restConfiguration bindingMode="off" component="servlet" contextPath="/api" enableCORS="true"/>
 		<rest path="/ping">
 			<get uri="/" >

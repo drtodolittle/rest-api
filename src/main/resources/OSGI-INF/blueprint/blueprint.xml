@@ -373,7 +373,7 @@
 				<constant>{{camunda-uri}}</constant>
 			</setHeader>
 			<setHeader headerName="Exchange.HTTP_PATH">
-				<constant>/engine-rest/user/${header.username}/credentials</constant>
+				<simple>/engine-rest/user/${header.username}/credentials</simple>
 			</setHeader>
 			<setHeader headerName="CamelHttpMethod">
 				<constant>PUT</constant>

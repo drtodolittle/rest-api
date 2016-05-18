@@ -26,7 +26,6 @@ class GenerateCreateProcessUserRegistryJSONTest {
 		}
 
         exchange.in.body = builder.toString().getBytes()
-		exchange.in.headers.username = "user1"
         def processor = new GenerateCreateProcessUserRegistryJSON()
 		processor.process(exchange)
 		def jsonSlurper = new JsonSlurper()
@@ -35,7 +34,7 @@ class GenerateCreateProcessUserRegistryJSONTest {
 		assertEquals "firstname1", result.variables.firstname.value
 		assertEquals "lastname2", result.variables.lastname.value
 		assertEquals "password1", result.variables.password.value
-		assertEquals "user1", result.businessKey	
+		assertEquals "test@test.com", result.businessKey	
 	}
 
     @Test

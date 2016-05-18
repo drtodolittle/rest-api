@@ -14,7 +14,7 @@
 			<cm:property name="smtp.host" value="hostname" />
 			<cm:property name="smtp.username" value="username" />
 			<cm:property name="smtp.password" value="password" />
-			<cm:property name="drtodolittleurl" value="http://www.drtodolittle.de" />
+			<cm:property name="drtodolittleurl" value="http://app.drtodolittle.de" />
 		</cm:default-properties>
 	</cm:property-placeholder>
 	<!-- to setup camel servlet with OSGi HttpService -->
@@ -127,17 +127,17 @@
 				<to uri="direct:hipchat" />
 			</post>
 		</rest>
-		<route>
+		<route id="ping">
 			<from uri="direct:ping" />
 			<transform>
 				<constant>Hello, I'm Dr ToDo Little!</constant>
 			</transform>
 		</route>
-		<route>
+		<route id="gettodo">
 			<from uri="direct:gettodo" />
 			<to uri="velocity:templates/gettask.vm" />
 		</route>
-		<route>
+		<route id="updatetodo">
 			<from uri="direct:updatetodo" />
 			<process ref="extracttopic" />
 			<to uri="direct:extracttaskid" />
@@ -159,7 +159,7 @@
 			<to uri="http4://setFromHeader" />
 			<to uri="direct:noanswer" />
 		</route>
-		<route>
+		<route id="login">
 			<from uri="direct:login" />
 			<onException>
 				<exception>java.lang.IllegalArgumentException</exception>
@@ -196,7 +196,7 @@
 				</when>
 			</choice>
 		</route>
-		<route>
+		<route id="gettodos">
 			<from uri="direct:gettodos" />
 			<onException>
 				<exception>java.lang.IllegalArgumentException</exception>
@@ -242,7 +242,7 @@
 				</otherwise>
 			</choice>
 		</route>
-		<route>
+		<route id="gettodovariables">
 			<from uri="direct:gettodovariables" />
 			<setHeader headerName="Exchange.HTTP_PATH">
 				<constant>/engine-rest/variable-instance</constant>
@@ -258,14 +258,14 @@
 			<to uri="http4://setFromHeader" />
 			<process ref="generateToDoJSONProcessor" />
 		</route>
-		<route>
+		<route id="noanswer">
 			<from uri="direct:noanswer" />
 			<removeHeaders pattern="*" />
 			<setHeader headerName="Exchange.HTTP_RESPONSE_CODE">
 				<constant>204</constant>
 			</setHeader>
 		</route>
-		<route>
+		<route id="extracttaskid">
 			<from uri="direct:extracttaskid" />
 			<setHeader headerName="Exchange.HTTP_URI">
 				<constant>{{camunda-uri}}</constant>
@@ -282,7 +282,7 @@
 			<to uri="http4://setFromHeader" />
 			<process ref="extractTaskIdProcessor" />
 		</route>
-		<route>
+		<route id="deletetodo">
 			<from uri="direct:deletetodo" />
 			<to uri="direct:extracttaskid" />
 			<setHeader headerName="Exchange.HTTP_URI">
@@ -303,7 +303,7 @@
 			<to uri="http4://setFromHeader" />
 			<to uri="direct:noanswer" />
 		</route>
-		<route>
+		<route id="tododone">
 			<from uri="direct:tododone" />
 			<to uri="direct:extracttaskid" />
 			<setHeader headerName="Exchange.HTTP_URI">
@@ -324,7 +324,7 @@
 			<to uri="http4://setFromHeader" />
 			<to uri="direct:noanswer" />
 		</route>
-		<route>
+		<route id="todoundone">
 			<from uri="direct:todoundone" />
 			<to uri="direct:extracttaskid" />
 			<setHeader headerName="Exchange.HTTP_URI">
@@ -345,7 +345,7 @@
 			<to uri="http4://setFromHeader" />
 			<to uri="direct:noanswer" />
 		</route>
-		<route>
+		<route id="createtodo">
 			<from uri="direct:createtodo" />
 			<process ref="extractuserfromtoken" />
 			<process ref="generateCreateProcessJSONProcessor" />
@@ -387,7 +387,7 @@
 				<constant>204</constant>
 			</setHeader>
 		</route>
-		<route>
+		<route id="registeruser">
 			<from uri="direct:registeruser" />
 			<process ref="generateCreateProcessUserRegistryJSON" />
 			<setHeader headerName="Exchange.HTTP_URI">
@@ -408,7 +408,7 @@
 				<constant>204</constant>
 			</setHeader>
 		</route>
-		<route>
+		<route id="validateemail">
 			<from uri="direct:validateemail" />
 			<process ref="extractUserName" />
 			<setBody>
@@ -416,6 +416,38 @@
 					{
 					"messageName": "mailverification",
 					"businessKey": "${header.username}"
+					}
+				</simple>
+			</setBody>
+			<setHeader headerName="Exchange.HTTP_URI">
+				<constant>{{camunda-uri}}</constant>
+			</setHeader>
+			<setHeader headerName="Exchange.HTTP_PATH">
+				<constant>/engine-rest/message</constant>
+			</setHeader>
+			<setHeader headerName="CamelHttpMethod">
+				<constant>POST</constant>
+			</setHeader>
+			<setHeader headerName="Exchange.CONTENT_TYPE">
+				<constant>application/json</constant>
+			</setHeader>
+			<to uri="http4://setFromHeader" />
+			<setHeader headerName="Exchange.HTTP_RESPONSE_CODE">
+				<constant>204</constant>
+			</setHeader>
+		</route>
+		<route id="resetpassword">
+			<from uri="direct:resetpassword" />
+			<process ref="extractUserName" />
+			<convertBodyTo type="java.lang.String"/>
+			<setBody>
+				<simple>
+					{
+					"messageName": "resetpassword",
+					"businessKey": "${header.username}",
+					"processVariables" : {
+						"password" : {"value" : "${body}", "type": "String"}
+						}
 					}
 				</simple>
 			</setBody>

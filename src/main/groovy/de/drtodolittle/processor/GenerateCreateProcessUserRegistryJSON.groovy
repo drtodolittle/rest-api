@@ -20,13 +20,14 @@ class GenerateCreateProcessUserRegistryJSON implements Processor{
 
     public void process(Exchange exchange) {
 		def input = exchange.in.body
-		def username = exchange.in.headers.username
+		def username
 		def jsonSlurper = new JsonSlurper()
 		def vars = jsonSlurper.parse(input)
 
-		if (vars.email == null || vars.firstname == null || vars.lastname == null || vars.password == null || username == null) {
+		if (vars.email == null || vars.firstname == null || vars.lastname == null || vars.password == null) {
 			throw new IllegalArgumentException("One of the parameters are null")
 		}
+		username = vars.email
 		
         def builder = new groovy.json.JsonBuilder()
         builder {

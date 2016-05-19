@@ -485,7 +485,7 @@
 		</route>
 		<route id="getuser">
 			<from uri="direct:getuser" />
-			<process ref="extractUserName" />
+			<process ref="extractuserfromtoken" />
 			<setHeader headerName="Exchange.HTTP_URI">
 				<constant>{{camunda-uri}}</constant>
 			</setHeader>

@@ -85,7 +85,10 @@
 				<to uri="direct:ping" />
 			</get>
 		</rest>
-		<rest path="/users">
+		<rest path="/user">
+			<get uri="/" produces="application/json">
+				<to uri="direct:getuser" />
+			</get>
 			<post uri="/" produces="application/json">
 				<to uri="direct:registeruser" />
 			</post>
@@ -479,6 +482,23 @@
 			<to uri="velocity:templates/generateemail.vm" />
 			<removeHeaders pattern="*" excludePattern="to|from|subject"/>
 			<to uri="smtp://{{smtp.host}}?username={{smtp.username}}&amp;password={{smtp.password}}&amp;contentType=text/html" />
+		</route>
+		<route id="getuser">
+			<from uri="direct:getuser" />
+			<process ref="extractUserName" />
+			<setHeader headerName="Exchange.HTTP_URI">
+				<constant>{{camunda-uri}}</constant>
+			</setHeader>
+			<setHeader headerName="Exchange.HTTP_PATH">
+				<simple>/engine-rest/user/${header.username}/profile</simple>
+			</setHeader>
+			<setHeader headerName="CamelHttpMethod">
+				<constant>GET</constant>
+			</setHeader>
+			<setHeader headerName="Exchange.CONTENT_TYPE">
+				<constant>application/json</constant>
+			</setHeader>
+			<to uri="http4://setFromHeader" />
 		</route>
 		<route id="hipchat">
 			<from uri="direct:hipchat" />

@@ -4,7 +4,7 @@
 <br />
 <p>thank you for interesting in Dr ToDo Little. To activate your account click the following link 
 
-<a href="${headers.drtodolittleurl}/api/users/validate/${headers.token}">Validate email</a></p>
+<a href="${headers.drtodolittleurl}/api/user/validate/${headers.token}">Validate email</a></p>
 <br />
 <p>Bye,</p>
 <br />

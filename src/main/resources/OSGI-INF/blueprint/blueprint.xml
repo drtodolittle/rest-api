@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"            
-		xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.1.0"           
-		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"           
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+		xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.1.0"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		xsi:schemaLocation="http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd
 		http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.1.0 http://aries.apache.org/schemas/blueprint-cm/blueprint-cm-1.1.0.xsd
 		http://camel.apache.org/schema/blueprint http://camel.apache.org/schema/blueprint/camel-blueprint.xsd">
@@ -17,6 +17,8 @@
 			<cm:property name="drtodolittleurl" value="http://app.drtodolittle.de" />
 		</cm:default-properties>
 	</cm:property-placeholder>
+	<!-- get Firebase TokenService -->
+	<reference id="tokenService" interface="de.drtodolittle.firebase.api.TokenService" />
 	<!-- to setup camel servlet with OSGi HttpService -->
 	<reference id="httpService" interface="org.osgi.service.http.HttpService"/>
 	<bean class="org.apache.camel.component.servlet.osgi.OsgiServletRegisterer" destroy-method="unregister" init-method="register">
@@ -48,8 +50,11 @@
 	<bean class="de.drtodolittle.processor.CreateJsonWebToken" id="createjsonwebtoken">
 		<property name="secret" value="${jsonwebtokensecret}" />
 	</bean>
-	<bean class="de.drtodolittle.processor.ExtractUserFromToken" id="extractuserfromtoken">
+<!-- 	<bean class="de.drtodolittle.processor.ExtractUserFromToken" id="extractuserfromtoken">
 		<property name="secret" value="${jsonwebtokensecret}" />
+	</bean> -->
+	<bean class="de.drtodolittle.processor.ExtractUserFromFirebaseToken" id="extractuserfromtoken">
+		<property name="service" ref="tokenService" />
 	</bean>
 	<bean class="de.drtodolittle.processor.ValidateBodyProcessor" id="extractemailandprocessid">
 		<argument>
@@ -77,7 +82,7 @@
 
 	<bean id="deadLetterErrorHandler" class="org.apache.camel.builder.DeadLetterChannelBuilder">
 	  <property name="deadLetterUri" value="direct:deadletter"/>
-	</bean>	
+	</bean>
 	<camelContext xmlns="http://camel.apache.org/schema/blueprint" errorHandlerRef="deadLetterErrorHandler">
 		<restConfiguration bindingMode="off" component="servlet" contextPath="/api" enableCORS="true"/>
 		<rest path="/ping">

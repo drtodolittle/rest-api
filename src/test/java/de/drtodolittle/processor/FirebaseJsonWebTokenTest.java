@@ -20,7 +20,7 @@ import io.jsonwebtoken.SignatureException;
  * @author Guenther_D
  *
  */
-public class JsonWebTokenTest {
+public class FirebaseJsonWebTokenTest {
 
 	@Test
 	public void testCreateToken() {

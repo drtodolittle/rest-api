@@ -123,7 +123,7 @@
           <instructions>
             <Bundle-SymbolicName>rest-api</Bundle-SymbolicName>
             <Private-Package>de.drtodolittle.*</Private-Package>
-            <Import-Package>*</Import-Package>
+            <Import-Package>*, de.drtodolittle.firebase.api</Import-Package>
           </instructions>
         </configuration>
       </plugin>

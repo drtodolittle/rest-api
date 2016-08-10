@@ -50,12 +50,12 @@
 	<bean class="de.drtodolittle.processor.CreateJsonWebToken" id="createjsonwebtoken">
 		<property name="secret" value="${jsonwebtokensecret}" />
 	</bean>
-<!-- 	<bean class="de.drtodolittle.processor.ExtractUserFromToken" id="extractuserfromtoken">
+ 	<bean class="de.drtodolittle.processor.ExtractUserFromToken" id="extractuserfromtoken">
 		<property name="secret" value="${jsonwebtokensecret}" />
-	</bean> -->
-	<bean class="de.drtodolittle.processor.ExtractUserFromFirebaseToken" id="extractuserfromtoken">
-		<property name="service" ref="tokenService" />
 	</bean>
+<!--	<bean class="de.drtodolittle.processor.ExtractUserFromFirebaseToken" id="extractuserfromtoken">
+		<property name="service" ref="tokenService" />
+	</bean>-->
 	<bean class="de.drtodolittle.processor.ValidateBodyProcessor" id="extractemailandprocessid">
 		<argument>
 			<bean class="de.drtodolittle.processor.ExtractEmailAndProcessId" >

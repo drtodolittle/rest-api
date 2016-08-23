@@ -92,6 +92,7 @@
 				<to uri="direct:ping" />
 			</get>
 		</rest>
+		<!-- new comment -->
 		<rest path="/user">
 			<get uri="/" produces="application/json">
 				<to uri="direct:getuser" />

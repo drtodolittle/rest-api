@@ -15,16 +15,15 @@ import org.apache.camel.processor.aggregate.AggregationStrategy
  * @author Guenther_D
  */
 class ProcessInstanceVariables implements AggregationStrategy {
-	
+
     public Exchange aggregate(Exchange oldExchange, Exchange newExchange) {
         if (newExchange.in.body == null) {
-			return oldExchange
-		}
-		if (oldExchange == null) {
+			      return oldExchange
+		    }
+		    if (oldExchange == null) {
             return newExchange
         }
         oldExchange.in.body = oldExchange.in.body + "," + newExchange.in.body
         return oldExchange
     }
 }
-

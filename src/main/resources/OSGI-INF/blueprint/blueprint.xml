@@ -87,9 +87,7 @@
 	</bean>
 	<camelContext xmlns="http://camel.apache.org/schema/blueprint" errorHandlerRef="deadLetterErrorHandler">
 		<restConfiguration bindingMode="off" component="servlet" contextPath="/api" enableCORS="true">
-			<corsHeaders>
-				<corsHeaderProperty key="Access-Control-Allow-Headers" value="Origin, Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers, Authorization" />
-			</corsHeaders>
+			<corsHeaders key="Access-Control-Allow-Headers" value="Origin, Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers, Authorization" />
 		</restConfiguration>
 		<rest path="/ping">
 			<get uri="/" >

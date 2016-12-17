@@ -225,7 +225,7 @@
 			</onException>
 			<choice>
 				<when>
-					<groovy>request.headers.Accept.contains('application/json') || request.headers.Accept.contains('application/javascript') || request.headers.Accept.contains('text/javascript')</groovy>
+					<groovy>request.headers.Accept != null &amp;&amp; (request.headers.Accept.contains('application/json') || request.headers.Accept.contains('application/javascript') || request.headers.Accept.contains('text/javascript'))</groovy>
 					<process ref="extractuserfromtoken" />
 					<setHeader headerName="Exchange.HTTP_URI">
 						<constant>{{camunda-uri}}</constant>

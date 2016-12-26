@@ -28,6 +28,18 @@
 	</bean>
 	<bean class="org.apache.camel.component.servlet.CamelHttpTransportServlet" id="camelServlet"/>
 
+	<bean id="validateTokenFilter" class="de.drtodolittle.http.ValidateTokenFilter">
+		<property name="service" ref="tokenService" />
+	</bean>
+
+	<service interface="javax.servlet.Filter" ref="validateTokenFilter">
+		<service-properties>
+      <entry key="pattern">
+         <value type="java.lang.String">/api/*</value>
+      </entry>
+   </service-properties>
+ </service>
+
 	<bean class="de.drtodolittle.processor.ValidateBodyProcessor" id="extractTaskIdProcessor">
 		<argument><bean class="de.drtodolittle.processor.ExtractTaskId" /></argument>
 	</bean>
@@ -209,8 +221,8 @@
 				</when>
 			</choice>
 		</route>
-		<route id="gettodos">
-			<from uri="direct:gettodos" />
+		<route id="extractuserfromtoken">
+			<from uri="direct:extractuserfromtoken" />
 			<onException>
 				<exception>java.lang.IllegalArgumentException</exception>
 				<exception>io.jsonwebtoken.SignatureException</exception>
@@ -227,7 +239,19 @@
 				<when>
 					<groovy>request.headers.Accept != null &amp;&amp; (request.headers.Accept.contains('application/json') || request.headers.Accept.contains('application/javascript') || request.headers.Accept.contains('text/javascript'))</groovy>
 					<process ref="extractuserfromtoken" />
-					<setHeader headerName="Exchange.HTTP_URI">
+				</when>
+				<otherwise>
+					<removeHeaders pattern="*" />
+					<setHeader headerName="Exchange.HTTP_RESPONSE_CODE">
+					<constant>406</constant>
+				</setHeader>
+				</otherwise>
+			</choice>
+		</route>
+		<route id="gettodos">
+			<from uri="direct:gettodos" />
+			<to uri=""
+								<setHeader headerName="Exchange.HTTP_URI">
 						<constant>{{camunda-uri}}</constant>
 					</setHeader>
 					<setHeader headerName="Exchange.HTTP_PATH">
@@ -246,14 +270,7 @@
 						<simple>[${body}]</simple>
 					</setBody>
 					<removeHeaders pattern="*" />
-				</when>
-				<otherwise>
-					<removeHeaders pattern="*" />
-					<setHeader headerName="Exchange.HTTP_RESPONSE_CODE">
-					<constant>406</constant>
-				</setHeader>
-				</otherwise>
-			</choice>
+
 		</route>
 		<route id="gettodovariables">
 			<from uri="direct:gettodovariables" />

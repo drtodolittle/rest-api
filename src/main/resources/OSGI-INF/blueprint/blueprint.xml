@@ -31,8 +31,8 @@
     </bean>
     <service interface="javax.servlet.Filter" ref="validateTokenFilter">
       <service-properties>
-        <entry key="servletNames">
-          <value type="java.lang.String">CamelServlet</value>
+        <entry key="urlPatterns">
+          <value type="java.lang.String">/todos/*</value>
         </entry>
         </service-properties>
       </service>

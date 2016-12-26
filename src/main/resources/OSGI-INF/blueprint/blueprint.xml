@@ -32,7 +32,7 @@
     <service interface="javax.servlet.Filter" ref="validateTokenFilter">
       <service-properties>
         <entry key="urlPatterns">
-          <value type="java.lang.String">/todos/*</value>
+          <value type="java.lang.String">/api/todos/*</value>
         </entry>
         </service-properties>
       </service>

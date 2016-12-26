@@ -10,7 +10,7 @@ public class ValidateTokenFilter implements Filter {
   private def service = null
 
   public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-    def authorization = request.headers.Authorization
+    def authorization = request.getHeader("Authorization")
     if (authorization != null) {
       def authorizationTokens = authorization.split(" ")
       if (authorizationTokens.size() == 2) {

@@ -16,6 +16,11 @@ public class ValidateTokenFilter implements Filter {
       if (authorizationTokens.size() == 2) {
         def token = authorizationTokens[1]
         String user = service.verify(token)
+        response.setHeader("Access-Control-Allow-Headers", "Origin, Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers, Authorization")
+        response.setHeader("Access-Control-Allow-Methods", "GET, HEAD, POST, PUT, DELETE, TRACE, OPTIONS, CONNECT, PATCH")
+        response.setHeader("Access-Control-Allow-Origin", "*")
+        response.setHeader("Access-Control-Max-Age", "3600")
+
         if (user == null) {
           ((HttpServletResponse) response).sendError(401, "Invalid token: Token could not be verified.")
         }

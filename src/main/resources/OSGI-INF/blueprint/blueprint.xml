@@ -29,13 +29,14 @@
     <bean id="validateTokenFilter" class="de.drtodolittle.http.ValidateTokenFilter">
       <property name="service" ref="tokenService" />
     </bean>
-    <service interface="javax.servlet.Filter" ref="validateTokenFilter">
+<!--    <service interface="javax.servlet.Filter" ref="validateTokenFilter">
       <service-properties>
         <entry key="urlPatterns">
           <value type="java.lang.String">/api/todos/*</value>
         </entry>
         </service-properties>
       </service>
+-->
       <bean class="de.drtodolittle.processor.ValidateBodyProcessor" id="extractTaskIdProcessor">
         <argument>
           <bean class="de.drtodolittle.processor.ExtractTaskId" />

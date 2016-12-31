@@ -33,7 +33,7 @@ public class ValidateTokenFilter implements Filter {
       }
     }
     else {
-      ((HttpServletResponse) response).sendError(401, "Invalid token: Authorization header is not correct.")
+      ((HttpServletResponse) response).sendError(401, "Invalid token: Authorization header is not available.")
     }
   }
 

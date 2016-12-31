@@ -26,9 +26,6 @@
       <property name="servlet" ref="camelServlet"/>
     </bean>
     <bean class="org.apache.camel.component.servlet.CamelHttpTransportServlet" id="camelServlet"/>
-    <bean id="validateTokenFilter" class="de.drtodolittle.http.ValidateTokenFilter">
-      <property name="service" ref="tokenService" />
-    </bean>
 <!--    <service interface="javax.servlet.Filter" ref="validateTokenFilter">
       <service-properties>
         <entry key="urlPatterns">

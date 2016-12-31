@@ -63,19 +63,6 @@
         </argument>
       </bean>
       <bean class="de.drtodolittle.aggregate.ProcessInstanceVariables" id="processInstanceVariablesAggregationStrategy" />
-      <bean class="de.drtodolittle.processor.ValidateBodyProcessor" id="extractUserNameAndPassword">
-        <argument>
-          <bean class="de.drtodolittle.processor.ExtractUserNameAndPassword" />
-        </argument>
-      </bean>
-      <bean class="de.drtodolittle.processor.CreateJsonWebToken" id="createjsonwebtoken">
-        <property name="secret" value="${jsonwebtokensecret}" />
-      </bean>
-      <!--
-       	<bean class="de.drtodolittle.processor.ExtractUserFromToken" id="extractuserfromtoken">
-      <property name="secret" value="${jsonwebtokensecret}" />
-    </bean>
-    -->
     <bean class="de.drtodolittle.processor.ExtractUserFromFirebaseToken" id="extractuserfromtoken">
       <property name="service" ref="tokenService" />
     </bean>
@@ -86,9 +73,6 @@
         </bean>
       </argument>
     </bean>
-    <bean class="de.drtodolittle.processor.ExtractUserFromLink" id="extractUserName" >
-      <property name="secret" value="${userregistrytokensecret}" />
-    </bean>
     <bean class="de.drtodolittle.processor.ValidateBodyProcessor" id="extracttopic">
       <argument>
         <bean class="de.drtodolittle.processor.ExtractTopic" />
@@ -97,11 +81,6 @@
     <bean class="de.drtodolittle.processor.ValidateBodyProcessor" id="extractProcessIdsProcessor">
       <argument>
         <bean class="de.drtodolittle.processor.ExtractProcessInstanceIds" />
-      </argument>
-    </bean>
-    <bean class="de.drtodolittle.processor.ValidateBodyProcessor" id="mappingPasswordJSON">
-      <argument>
-        <bean class="de.drtodolittle.processor.MappingPasswordJSON" />
       </argument>
     </bean>
     <!-- repository for the idempotent consumer -->
@@ -117,21 +96,6 @@
         <get uri="/" >
           <to uri="direct:ping" />
         </get>
-      </rest>
-      <!-- new comment -->
-      <rest path="/user">
-        <get uri="/" produces="application/json">
-          <to uri="direct:getuser" />
-        </get>
-        <post uri="/" produces="application/json">
-          <to uri="direct:registeruser" />
-        </post>
-        <get uri="/validate/{token}" >
-          <to uri="direct:validateemail" />
-        </get>
-        <put uri="/">
-          <to uri="direct:updatepassword" />
-        </put>
       </rest>
       <rest path="/todos" consumes="application/json" produces="application/json">
         <get uri="/">
@@ -155,15 +119,24 @@
         <get uri="/{id}/undone">
           <to uri="direct:todoundone" />
         </get>
-        <post uri="/login">
-          <to uri="direct:login" />
-        </post>
       </rest>
       <rest path="/hipchat" consumes="application/json" produces="application/json">
         <post uri="/">
           <to uri="direct:hipchat" />
         </post>
       </rest>
+			<onException>
+				<exception>java.lang.IllegalArgumentException</exception>
+				<exception>io.jsonwebtoken.SignatureException</exception>
+				<exception>io.jsonwebtoken.MalformedJwtException</exception>
+				<handled>
+					<constant>true</constant>
+				</handled>
+				<removeHeaders pattern="*" />
+				<setHeader headerName="Exchange.HTTP_RESPONSE_CODE">
+					<constant>401</constant>
+				</setHeader>
+			</onException>
       <route id="ping">
         <from uri="direct:ping" />
         <transform>
@@ -172,10 +145,12 @@
       </route>
       <route id="gettodo">
         <from uri="direct:gettodo" />
-        <to uri="velocity:templates/gettask.vm" />
+        <process ref="extractuserfromtoken" />
+				<to uri="velocity:templates/gettask.vm" />
       </route>
       <route id="updatetodo">
         <from uri="direct:updatetodo" />
+				<process ref="extractuserfromtoken" />
         <process ref="extracttopic" />
         <to uri="direct:extracttaskid" />
         <setHeader headerName="Exchange.HTTP_URI">
@@ -196,57 +171,8 @@
         <to uri="http4://setFromHeader" />
         <to uri="direct:noanswer" />
       </route>
-      <route id="login">
-        <from uri="direct:login" />
-        <onException>
-          <exception>java.lang.IllegalArgumentException</exception>
-          <handled>
-            <constant>true</constant>
-          </handled>
-          <setHeader headerName="Exchange.HTTP_RESPONSE_CODE">
-            <constant>401</constant>
-          </setHeader>
-        </onException>
-        <removeHeaders pattern="*" />
-        <process ref="extractUserNameAndPassword" />
-        <setHeader headerName="Exchange.HTTP_URI">
-          <constant>{{camunda-uri}}</constant>
-        </setHeader>
-        <setHeader headerName="Exchange.HTTP_PATH">
-          <constant>/camunda/api/admin/auth/user/default/login/tasklist</constant>
-        </setHeader>
-        <setHeader headerName="CamelHttpMethod">
-          <constant>POST</constant>
-        </setHeader>
-        <setHeader headerName="Accept">
-          <constant>application/json</constant>
-        </setHeader>
-        <setHeader headerName="Content-Type">
-          <constant>application/x-www-form-urlencoded</constant>
-        </setHeader>
-        <to uri="http4://setFromHeader?throwExceptionOnFailure=false" />
-        <choice>
-          <when>
-            <groovy>request.headers.CamelHttpResponseCode == 200</groovy>
-            <process ref="createjsonwebtoken" />
-            <removeHeaders pattern="*" />
-          </when>
-        </choice>
-      </route>
       <route id="gettodos">
         <from uri="direct:gettodos" />
-        <onException>
-          <exception>java.lang.IllegalArgumentException</exception>
-          <exception>io.jsonwebtoken.SignatureException</exception>
-          <exception>io.jsonwebtoken.MalformedJwtException</exception>
-          <handled>
-            <constant>true</constant>
-          </handled>
-          <removeHeaders pattern="*" />
-          <setHeader headerName="Exchange.HTTP_RESPONSE_CODE">
-            <constant>401</constant>
-          </setHeader>
-        </onException>
         <choice>
           <when>
             <groovy>request.headers.Accept != null &amp;&amp; (request.headers.Accept.contains('application/json') || request.headers.Accept.contains('application/javascript') || request.headers.Accept.contains('text/javascript'))</groovy>
@@ -321,7 +247,8 @@
       </route>
       <route id="deletetodo">
         <from uri="direct:deletetodo" />
-        <to uri="direct:extracttaskid" />
+        <process ref="extractuserfromtoken" />
+				<to uri="direct:extracttaskid" />
         <setHeader headerName="Exchange.HTTP_URI">
           <constant>{{camunda-uri}}</constant>
         </setHeader>
@@ -342,7 +269,8 @@
       </route>
       <route id="tododone">
         <from uri="direct:tododone" />
-        <to uri="direct:extracttaskid" />
+        <process ref="extractuserfromtoken" />
+				<to uri="direct:extracttaskid" />
         <setHeader headerName="Exchange.HTTP_URI">
           <constant>{{camunda-uri}}</constant>
         </setHeader>
@@ -363,7 +291,8 @@
       </route>
       <route id="todoundone">
         <from uri="direct:todoundone" />
-        <to uri="direct:extracttaskid" />
+        <process ref="extractuserfromtoken" />
+				<to uri="direct:extracttaskid" />
         <setHeader headerName="Exchange.HTTP_URI">
           <constant>{{camunda-uri}}</constant>
         </setHeader>
@@ -402,171 +331,31 @@
         <process ref="extractCreatedTaskId" />
         <removeHeaders pattern="*" />
       </route>
-      <route id="updatepassword" >
-        <from uri="direct:updatepassword" />
-        <process ref="extractuserfromtoken" />
-        <process ref="mappingPasswordJSON" />
-        <setHeader headerName="Exchange.HTTP_URI">
-          <constant>{{camunda-uri}}</constant>
-        </setHeader>
-        <setHeader headerName="Exchange.HTTP_PATH">
-          <simple>/engine-rest/user/${header.username}/credentials</simple>
-        </setHeader>
-        <setHeader headerName="CamelHttpMethod">
-          <constant>PUT</constant>
-        </setHeader>
-        <setHeader headerName="Exchange.CONTENT_TYPE">
-          <constant>application/json</constant>
-        </setHeader>
-        <to uri="http4://setFromHeader" />
-        <removeHeaders pattern="*" />
-        <setHeader headerName="Exchange.HTTP_RESPONSE_CODE">
-          <constant>204</constant>
-        </setHeader>
-      </route>
-      <route id="registeruser">
-        <from uri="direct:registeruser" />
-        <process ref="generateCreateProcessUserRegistryJSON" />
-        <setHeader headerName="Exchange.HTTP_URI">
-          <constant>{{camunda-uri}}</constant>
-        </setHeader>
-        <setHeader headerName="Exchange.HTTP_PATH">
-          <constant>/engine-rest/process-definition/key/UserRegistration/start</constant>
-        </setHeader>
-        <setHeader headerName="CamelHttpMethod">
-          <constant>POST</constant>
-        </setHeader>
-        <setHeader headerName="Exchange.CONTENT_TYPE">
-          <constant>application/json</constant>
-        </setHeader>
-        <to uri="http4://setFromHeader" />
-        <removeHeaders pattern="*" />
-        <setHeader headerName="Exchange.HTTP_RESPONSE_CODE">
-          <constant>204</constant>
-        </setHeader>
-      </route>
-      <route id="validateemail">
-        <from uri="direct:validateemail" />
-        <process ref="extractUserName" />
+      <route id="hipchat">
+        <from uri="direct:hipchat" />
+        <convertBodyTo type="java.lang.String"/>
+        <to uri="log:hipchat?showAll=true" />
         <setBody>
           <simple>
-            					{
-            					"messageName": "mailverification",
-            					"businessKey": "${header.username}"
-            					}
-            				</simple>
+            			{
+            				"color": "green",
+            				"message": "Hello, I'm Dr ToDo Little, what can I do for you? If you want to show your team todos send /drtodolittle list. If you want to create a new todo send /drtodolittle new topic",
+            				"notify": false,
+            				"message_format": "text"
+            			}
+            			</simple>
           </setBody>
-          <setHeader headerName="Exchange.HTTP_URI">
-            <constant>{{camunda-uri}}</constant>
-          </setHeader>
-          <setHeader headerName="Exchange.HTTP_PATH">
-            <constant>/engine-rest/message</constant>
-          </setHeader>
-          <setHeader headerName="CamelHttpMethod">
-            <constant>POST</constant>
-          </setHeader>
-          <setHeader headerName="Exchange.CONTENT_TYPE">
-            <constant>application/json</constant>
-          </setHeader>
-          <to uri="http4://setFromHeader" />
-          <setHeader headerName="Exchange.HTTP_RESPONSE_CODE">
-            <constant>204</constant>
-          </setHeader>
         </route>
-        <route id="resetpassword">
-          <from uri="direct:resetpassword" />
-          <process ref="extractUserName" />
-          <convertBodyTo type="java.lang.String"/>
+        <route id="deadletter">
+          <from uri="direct:deadletter" />
+          <to uri="log:deadletter?showAll=true" />
+          <removeHeaders pattern="*" />
+          <setHeader headerName="Exchange.HTTP_RESPONSE_CODE">
+            <constant>500</constant>
+          </setHeader>
           <setBody>
-            <simple>
-              					{
-              					"messageName": "resetpassword",
-              					"businessKey": "${header.username}",
-              					"processVariables" : {
-              						"password" : {"value" : "${body}", "type": "String"}
-              						}
-              					}
-              				</simple>
-            </setBody>
-            <setHeader headerName="Exchange.HTTP_URI">
-              <constant>{{camunda-uri}}</constant>
-            </setHeader>
-            <setHeader headerName="Exchange.HTTP_PATH">
-              <constant>/engine-rest/message</constant>
-            </setHeader>
-            <setHeader headerName="CamelHttpMethod">
-              <constant>POST</constant>
-            </setHeader>
-            <setHeader headerName="Exchange.CONTENT_TYPE">
-              <constant>application/json</constant>
-            </setHeader>
-            <to uri="http4://setFromHeader" />
-            <setHeader headerName="Exchange.HTTP_RESPONSE_CODE">
-              <constant>204</constant>
-            </setHeader>
-          </route>
-          <route id="emailvalidation">
-            <from uri="file:/var/drtodolittle/emailvalidation?delete=true" />
-            <convertBodyTo type="java.lang.String"/>
-            <process ref="extractemailandprocessid" />
-            <setHeader headerName="to">
-              <simple>${header.email}</simple>
-            </setHeader>
-            <setHeader headerName="from">
-              <constant>registration@drtodolittle.de</constant>
-            </setHeader>
-            <setHeader headerName="subject">
-              <constant>Email validation Dr ToDo Little</constant>
-            </setHeader>
-            <setHeader headerName="drtodolittleurl">
-              <constant>{{drtodolittleurl}}</constant>
-            </setHeader>
-            <to uri="velocity:templates/generateemail.vm" />
-            <removeHeaders pattern="*" excludePattern="to|from|subject"/>
-            <to uri="smtp://{{smtp.host}}?username={{smtp.username}}&amp;password={{smtp.password}}&amp;contentType=text/html" />
-          </route>
-          <route id="getuser">
-            <from uri="direct:getuser" />
-            <process ref="extractuserfromtoken" />
-            <setHeader headerName="Exchange.HTTP_URI">
-              <constant>{{camunda-uri}}</constant>
-            </setHeader>
-            <setHeader headerName="Exchange.HTTP_PATH">
-              <simple>/engine-rest/user/${header.username}/profile</simple>
-            </setHeader>
-            <setHeader headerName="CamelHttpMethod">
-              <constant>GET</constant>
-            </setHeader>
-            <setHeader headerName="Exchange.CONTENT_TYPE">
-              <constant>application/json</constant>
-            </setHeader>
-            <to uri="http4://setFromHeader" />
-          </route>
-          <route id="hipchat">
-            <from uri="direct:hipchat" />
-            <convertBodyTo type="java.lang.String"/>
-            <to uri="log:hipchat?showAll=true" />
-            <setBody>
-              <simple>
-                			{
-                				"color": "green",
-                				"message": "Hello, I'm Dr ToDo Little, what can I do for you? If you want to show your team todos send /drtodolittle list. If you want to create a new todo send /drtodolittle new topic",
-                				"notify": false,
-                				"message_format": "text"
-                			}
-                			</simple>
-              </setBody>
-            </route>
-            <route id="deadletter">
-              <from uri="direct:deadletter" />
-              <to uri="log:deadletter?showAll=true" />
-              <removeHeaders pattern="*" />
-              <setHeader headerName="Exchange.HTTP_RESPONSE_CODE">
-                <constant>500</constant>
-              </setHeader>
-              <setBody>
-                <constant>Internal server error</constant>
-              </setBody>
-            </route>
-          </camelContext>
-        </blueprint>
+            <constant>Internal server error</constant>
+          </setBody>
+        </route>
+      </camelContext>
+    </blueprint>

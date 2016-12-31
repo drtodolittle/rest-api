@@ -11,15 +11,15 @@ public class ValidateTokenFilter implements Filter {
 
   public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
     def authorization = request.getHeader("Authorization")
+    response.setHeader("Access-Control-Allow-Headers", "Origin, Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers, Authorization")
+    response.setHeader("Access-Control-Allow-Methods", "GET, HEAD, POST, PUT, DELETE, TRACE, OPTIONS, CONNECT, PATCH")
+    response.setHeader("Access-Control-Allow-Origin", "*")
+    response.setHeader("Access-Control-Max-Age", "3600")
     if (authorization != null) {
       def authorizationTokens = authorization.split(" ")
       if (authorizationTokens.size() == 2) {
         def token = authorizationTokens[1]
         String user = service.verify(token)
-        response.setHeader("Access-Control-Allow-Headers", "Origin, Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers, Authorization")
-        response.setHeader("Access-Control-Allow-Methods", "GET, HEAD, POST, PUT, DELETE, TRACE, OPTIONS, CONNECT, PATCH")
-        response.setHeader("Access-Control-Allow-Origin", "*")
-        response.setHeader("Access-Control-Max-Age", "3600")
 
         if (user == null) {
           ((HttpServletResponse) response).sendError(401, "Invalid token: Token could not be verified.")

@@ -119,6 +119,9 @@
         <delete uri="/{id}">
           <to uri="direct:deletetodo" />
         </delete>
+				<delete uri="/">
+          <to uri="direct:deletealltodos" />
+        </delete>
         <put uri="/{id}">
           <to uri="direct:updatetodo" />
         </put>
@@ -181,7 +184,7 @@
               <constant>/engine-rest/task</constant>
             </setHeader>
             <setHeader headerName="Exchange.HTTP_QUERY">
-              <simple>processInstanceBusinessKey=${header.username}&amp;sortBy=created&amp;sortOrder=asc</simple>
+              <simple>processInstanceBusinessKey=${header.username}&amp;sortBy=created&amp;sortOrder=asc&amp;firstResult=1&amp;maxResults=100</simple>
             </setHeader>
             <to uri="http4://setFromHeader" />
             <process ref="extractProcessIdsProcessor" />
@@ -264,6 +267,11 @@
         <to uri="http4://setFromHeader" />
         <to uri="direct:noanswer" />
       </route>
+			<route id="deletealltodos">
+				<from uri="direct:deletealltodos" />
+				<process ref="extractuserfromtoken" />
+
+			</route>
       <route id="tododone">
         <from uri="direct:tododone" />
         <process ref="extractuserfromtoken" />

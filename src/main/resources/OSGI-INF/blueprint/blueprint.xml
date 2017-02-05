@@ -184,7 +184,7 @@
               <constant>/engine-rest/task</constant>
             </setHeader>
             <setHeader headerName="Exchange.HTTP_QUERY">
-              <simple>processInstanceBusinessKey=${header.username}&amp;sortBy=created&amp;sortOrder=asc&amp;firstResult=1&amp;maxResults=100</simple>
+              <simple>processInstanceBusinessKey=${header.username}&amp;sortBy=created&amp;sortOrder=asc&amp;firstResult=1&amp;maxResults=50</simple>
             </setHeader>
             <to uri="http4://setFromHeader" />
             <process ref="extractProcessIdsProcessor" />

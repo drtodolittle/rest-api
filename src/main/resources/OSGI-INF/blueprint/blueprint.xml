@@ -190,9 +190,6 @@
             <process ref="extractProcessIdsProcessor" />
             <split strategyRef="processInstanceVariablesAggregationStrategy">
               <simple>${header.processIds}</simple>
-							<delay>
-            		<constant>100</constant>
-        			</delay>
               <to uri="direct:gettodovariables" />
             </split>
             <setBody>

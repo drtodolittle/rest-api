@@ -70,14 +70,14 @@ class GenerateToDoJSONTest {
     "caseExecutionId": null,
     "caseInstanceId": null,
     "serializationConfig": null
-  }      
+  }
 ]
-'''.getBytes()	
-		exchange.in.headers.processIds = ["1"]
+'''.getBytes()
+		exchange.in.headers.processInstanceIdIn = "1"
 		exchange.properties.CamelSplitIndex = 0
-        def processor = new GenerateToDoJSON()
+    def processor = new GenerateToDoJSON()
 		processor.process(exchange)
 		assertEquals '{"id":"1","topic":"test1","done":false}', exchange.in.body
 	}
-	
+
 }

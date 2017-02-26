@@ -226,7 +226,6 @@
           </groovy>
         </setHeader>
 				<removeHeader headerName="processIds"/>
-				<to uri="log:header?multiline=true&amp;showBody=false&amp;showBodyType=false&amp;showHeaders=true&amp;showExchangePattern=false" />
         <to uri="http4://setFromHeader" />
         <process ref="generateToDoJSONProcessor" />
       </route>

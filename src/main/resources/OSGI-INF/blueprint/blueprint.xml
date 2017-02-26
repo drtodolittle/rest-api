@@ -210,12 +210,19 @@
         <setHeader headerName="Exchange.HTTP_PATH">
           <constant>/engine-rest/variable-instance</constant>
         </setHeader>
+				<setHeader headerName="processInstanceIdIn">
+          <groovy>
+            <![CDATA[
+              return request.headers.processIds[exchange.properties.CamelSplitIndex]
+            ]]>
+          </groovy>
+        </setHeader>
         <setHeader headerName="Exchange.HTTP_QUERY">
           <groovy>
             <![CDATA[
-                      processInstanceIdIn=request.headers.processIds[exchange.properties.CamelSplitIndex]
-                      return "processInstanceIdIn=$processInstanceIdIn"
-                      ]]>
+	            processInstanceIdIn=request.headers.processInstanceIdIn
+	            return "processInstanceIdIn=$processInstanceIdIn"
+            ]]>
           </groovy>
         </setHeader>
 				<removeHeader headerName="processIds"/>

@@ -16,13 +16,13 @@ import org.apache.camel.Processor
  * @author Guenther_D
  */
 class GenerateToDoJSON implements Processor {
-	
+
      public void process(Exchange exchange) {
         def input = exchange.in.body
         def jsonSlurper = new JsonSlurper()
         def vars = jsonSlurper.parse(input)
 		def isDeleted = false
-		
+
 		vars.each({
 				if (it.name.equals("delete")) {
 					isDeleted = it.value
@@ -30,11 +30,11 @@ class GenerateToDoJSON implements Processor {
             })
 		if (!isDeleted) {
 			def todo = [:]
-			
-			todo.put("id", exchange.in.headers.processIds[exchange.properties.CamelSplitIndex])
-			
+
+			todo.put("id", exchange.in.headers.processInstanceIdIn)
+
 			vars.each({
-				
+
 					if (it.name.equals("topic")) {
 						todo.put("topic", it.value)
 					}
@@ -49,4 +49,3 @@ class GenerateToDoJSON implements Processor {
 		}
      }
 }
-

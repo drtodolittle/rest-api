@@ -4,18 +4,22 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>de.drtodolittle</groupId>
-  <artifactId>rest-api</artifactId>
-  <packaging>bundle</packaging>
+  <artifactId>rest-api-parent</artifactId>
+  <packaging>pom</packaging>
   <version>1.0-SNAPSHOT</version>
 
-  <name>Dr ToDo Little - Rest API</name>
+  <name>Dr ToDo Little - Rest API Parent</name>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <karaf.version>4.0.4</karaf.version>
+    <karaf.version>4.1.1</karaf.version>
   </properties>
-
+<modules>
+  <module>firebase-util</module>
+  <module>api</module>
+</modules>
+<dependencyManagement>
   <dependencies>
     <dependency>
       <groupId>org.apache.camel</groupId>
@@ -63,6 +67,23 @@
       <artifactId>log4j</artifactId>
       <version>1.2.17</version>
     </dependency>
+    <dependency>
+			<groupId>com.google.firebase</groupId>
+			<artifactId>firebase-server-sdk</artifactId>
+			<version>[3.0.0,)</version>
+		</dependency>
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>org.osgi.core</artifactId>
+			<version>6.0.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.12</version>
+			<scope>test</scope>
+		</dependency>
 
     <!-- Testing & Camel Plugin -->
     <dependency>
@@ -77,9 +98,9 @@
       <version>2.4.5</version>
     </dependency>
     <dependency>
-    	<groupId>de.drtodolittle.firebase</groupId>
+    	<groupId>de.drtodolittle</groupId>
     	<artifactId>firebase-util</artifactId>
-    	<version>1.0.0-SNAPSHOT</version>
+    	<version>${project.version}</version>
     </dependency>
     <dependency>
     	<groupId>	javax.servlet</groupId>
@@ -87,6 +108,7 @@
     	<version>3.0.1</version>
     </dependency>
   </dependencies>
+</dependencyManagement>
 
   <build>
     <defaultGoal>install</defaultGoal>
@@ -98,13 +120,6 @@
                 <version>${karaf.version}</version>
                 <extensions>true</extensions>
             </plugin>
-        </plugins>
-    </pluginManagement>
-    <plugins>
-      <plugin>
-          <groupId>org.apache.karaf.tooling</groupId>
-          <artifactId>karaf-maven-plugin</artifactId>
-      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -127,7 +142,7 @@
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
-        <version>2.3.7</version>
+        <version>3.2.0</version>
         <extensions>true</extensions>
         <executions>
           <execution>
@@ -138,25 +153,9 @@
            </goals>
           </execution>
         </executions>
-        <configuration>
-          <instructions>
-            <Bundle-SymbolicName>rest-api</Bundle-SymbolicName>
-            <Private-Package>de.drtodolittle.*</Private-Package>
-            <Import-Package>*, de.drtodolittle.firebase.api</Import-Package>
-          </instructions>
-        </configuration>
       </plugin>
 
-       <!-- to run the example using mvn camel:run -->
       <plugin>
-        <groupId>org.apache.camel</groupId>
-        <artifactId>camel-maven-plugin</artifactId>
-        <version>2.16.0</version>
-        <configuration>
-          <useBlueprint>true</useBlueprint>
-        </configuration>
-      </plugin>
-            <plugin>
         <groupId>org.codehaus.gmavenplus</groupId>
         <artifactId>gmavenplus-plugin</artifactId>
         <version>1.5</version>
@@ -177,6 +176,8 @@
       </plugin>
 
     </plugins>
+</pluginManagement>
+
   </build>
 
 </project>

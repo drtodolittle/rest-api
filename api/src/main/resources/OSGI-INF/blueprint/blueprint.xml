@@ -85,7 +85,7 @@
     <bean id="deadLetterErrorHandler" class="org.apache.camel.builder.DeadLetterChannelBuilder">
       <property name="deadLetterUri" value="direct:deadletter"/>
     </bean>
-    <camelContext xmlns="http://camel.apache.org/schema/blueprint" errorHandlerRef="deadLetterErrorHandler">
+    <camelContext xmlns="http://camel.apache.org/schema/blueprint" id="rest-api" errorHandlerRef="deadLetterErrorHandler">
 			<onException>
 				<exception>java.lang.IllegalArgumentException</exception>
 				<exception>io.jsonwebtoken.SignatureException</exception>

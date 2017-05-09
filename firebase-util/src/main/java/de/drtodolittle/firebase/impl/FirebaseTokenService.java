@@ -1,8 +1,13 @@
 /**
- * 
+ *
  */
 package de.drtodolittle.firebase.impl;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.FirebaseOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseToken;
 import com.google.firebase.tasks.Task;
@@ -17,7 +22,14 @@ import de.drtodolittle.firebase.api.TokenService;
 public class FirebaseTokenService implements TokenService {
 
 	public static final String PID = "de.drtodolittle.firebase.firebasetokenservice";
-	
+
+	public FirebaseTokenService(String servicePrivateKey, String databaseUrl) throws Exception {
+		FirebaseOptions options = new FirebaseOptions.Builder()
+				.setServiceAccount(new FileInputStream(servicePrivateKey))
+				.setDatabaseUrl(databaseUrl).build();
+		FirebaseApp.initializeApp(options);
+	}
+
 	/* (non-Javadoc)
 	 * @see de.drtodolittle.firebase.api.TokenService#verify(java.lang.String)
 	 */
@@ -36,7 +48,7 @@ public class FirebaseTokenService implements TokenService {
 			email = task.getResult().getEmail();
 		}
 		else {
-			task.getException().printStackTrace(); 
+			task.getException().printStackTrace();
 		}
 		return email;
 	}

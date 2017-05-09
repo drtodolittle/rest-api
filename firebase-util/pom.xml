@@ -33,7 +33,6 @@
 					<instructions>
 						<Export-Package>de.drtodolittle.firebase.api</Export-Package>
 						<Private-Package>de.drtodolittle.firebase.*</Private-Package>
-						<Bundle-Activator>de.drtodolittle.firebase.impl.Activator</Bundle-Activator>
 					</instructions>
 				</configuration>
 			</plugin>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"            
-		xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.1.0"           
-		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"           
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+		xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.1.0"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		xsi:schemaLocation="http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd
 		http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.1.0 http://aries.apache.org/schemas/blueprint-cm/blueprint-cm-1.1.0.xsd
 		http://camel.apache.org/schema/blueprint http://camel.apache.org/schema/blueprint/camel-blueprint.xsd">
@@ -9,11 +9,22 @@
 	<cm:property-placeholder persistent-id="firebase-util" update-strategy="reload">
 		<cm:default-properties>
 			<cm:property name="database.uri" value="https://drtodolittle.firebaseio.com/" />
-			<cm:property name="service.private.key" value="DrToDoLittle-10b9f17b6eb3.json" />
+			<cm:property name="service.private.key" value="etc/DrToDoLittle-10b9f17b6eb3.json" />
 		</cm:default-properties>
 	</cm:property-placeholder>
 	<!-- to setup camel servlet with OSGi HttpService -->
-	<reference id="tokenService" interface="de.drtodolittle.firebase.api.TokenService"/>
+
+	<bean id="firebaseTokenService" class="de.drtodolittle.firebase.impl.FirebaseTokenService">
+		<argument value="${service.private.key}" />
+		<argument value="${database.uri}" />
+	</bean>
+
+	<service ref="firebaseTokenService" interface="de.drtodolittle.firebase.api.TokenService">
+		<service-properties>
+			<entry key="service.pid" value="de.drtodolittle.firebase.firebasetokenservice" />
+		</service-properties>
+	</service>
+	<!--<reference id="tokenService" interface="de.drtodolittle.firebase.api.TokenService"/>-->
 	<reference id="httpService" interface="org.osgi.service.http.HttpService"/>
 	<bean class="org.apache.camel.component.servlet.osgi.OsgiServletRegisterer" destroy-method="unregister" init-method="register">
 		<property name="alias" value="/intern"/>
@@ -43,7 +54,7 @@
 		</route>
 		<route id="validatetoken">
 			<from uri="direct:validatetoken" />
-			<to uri="bean:tokenService" />
+			<to uri="bean:firebaseTokenService?method=verify" />
 		</route>
 	</camelContext>
 </blueprint>

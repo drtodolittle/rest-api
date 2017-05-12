@@ -1,13 +1,12 @@
 language: java
-dist: trusty
-sudo: required
+
 jdk:
 - oraclejdk8
 services:
 - docker
 after_success:
 - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
-- export REPO=docker pull drtodolittle/rest-api
+- export REPO=drtodolittle/rest-api
 - export TAG=1.0.0-SNAPSHOT
 - docker build -f docker/Dockerfile -t $REPO:latest docker
 - docker tag $REPO:latest $REPO:$TAG

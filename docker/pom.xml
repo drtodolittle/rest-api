@@ -65,10 +65,10 @@
 			              <goal>copy-resources</goal>
 			            </goals>
 			            <configuration>
-			              <outputDirectory>${project.build.directory}/etc</outputDirectory>
+			              <outputDirectory>${project.build.directory}/resources</outputDirectory>
 			              <resources>
 			                <resource>
-			                  <directory>src/main/resources</directory>
+			                  <directory>src/main/resources/</directory>
 			                  <filtering>true</filtering>
 			                </resource>
 			              </resources>
@@ -114,7 +114,11 @@
                  </resource>
 								 <resource>
                    <targetPath>/opt/karaf/etc</targetPath>
-                   <directory>${project.build.directory}/etc</directory>
+                   <directory>${project.build.directory}/resources/etc</directory>
+                 </resource>
+								 <resource>
+                   <targetPath>/opt/karaf/bin</targetPath>
+                   <directory>${project.build.directory}/resources/karaf-bin</directory>
                  </resource>
               </resources>
 							<forceTags>true</forceTags>

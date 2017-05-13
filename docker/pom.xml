@@ -116,10 +116,6 @@
                    <targetPath>/opt/karaf/etc</targetPath>
                    <directory>${project.build.directory}/resources/etc</directory>
                  </resource>
-								 <resource>
-                   <targetPath>/opt/karaf/bin</targetPath>
-                   <directory>${project.build.directory}/resources/karaf-bin</directory>
-                 </resource>
               </resources>
 							<forceTags>true</forceTags>
 							<imageTags>

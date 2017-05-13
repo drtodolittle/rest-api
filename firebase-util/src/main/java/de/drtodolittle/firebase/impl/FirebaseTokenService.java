@@ -24,9 +24,17 @@ public class FirebaseTokenService implements TokenService {
 	public static final String PID = "de.drtodolittle.firebase.firebasetokenservice";
 
 	public FirebaseTokenService(String servicePrivateKey, String databaseUrl) throws Exception {
+		InputStream privateKeyStream = null;
+		if (System.getenv("FIREBASE_TOKEN") != null) {
+			privateKeyStream = new ByteArrayInputStream(System.getenv("FIREBASE_TOKEN").getBytes());
+		}
+		else {
+			privateKeyStream = new FileInputStream(servicePrivateKey);
+		}
 		FirebaseOptions options = new FirebaseOptions.Builder()
-				.setServiceAccount(new FileInputStream(servicePrivateKey))
-				.setDatabaseUrl(databaseUrl).build();
+				.setServiceAccount(privateKeyStream)
+				.setDatabaseUrl(databaseUrl)
+				.build();
 		FirebaseApp.initializeApp(options);
 	}
 

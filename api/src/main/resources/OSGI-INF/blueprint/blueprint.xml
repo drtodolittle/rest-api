@@ -7,7 +7,7 @@
 		http://camel.apache.org/schema/blueprint http://camel.apache.org/schema/blueprint/camel-blueprint.xsd">
 <cm:property-placeholder persistent-id="drtodolittle" update-strategy="reload">
   <cm:default-properties>
-    <cm:property name="camunda-uri" value="http://localhost:10080" />
+    <cm:property name="camunda-uri" value="http://engine.camunda.drtodolittle" />
     <cm:property name="jsonwebtokensecret" value="changeit" />
     <cm:property name="userregistrytokensecret" value="changeit" />
     <cm:property name="smtp.host" value="hostname" />

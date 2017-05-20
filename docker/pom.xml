@@ -48,7 +48,7 @@
 								<feature>camel-http4</feature>
 								<feature>camel-script</feature>
 								<feature>camel-mail</feature>
-								<feature>jetty</feature>
+								<feature>webconsole</feature>
 							</features>
 							<repository>${project.build.directory}/system</repository>
 						</configuration>

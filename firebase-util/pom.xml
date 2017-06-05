@@ -13,7 +13,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.google.firebase</groupId>
-			<artifactId>firebase-server-sdk</artifactId>
+			<artifactId>firebase-admin</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.osgi</groupId>

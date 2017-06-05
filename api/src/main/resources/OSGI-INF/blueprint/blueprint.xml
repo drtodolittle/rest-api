@@ -7,13 +7,7 @@
 		http://camel.apache.org/schema/blueprint http://camel.apache.org/schema/blueprint/camel-blueprint.xsd">
 <cm:property-placeholder persistent-id="drtodolittle" update-strategy="reload">
   <cm:default-properties>
-    <cm:property name="camunda-uri" value="http://engine.camunda.drtodolittle" />
-    <cm:property name="jsonwebtokensecret" value="changeit" />
-    <cm:property name="userregistrytokensecret" value="changeit" />
-    <cm:property name="smtp.host" value="hostname" />
-    <cm:property name="smtp.username" value="username" />
-    <cm:property name="smtp.password" value="password" />
-    <cm:property name="drtodolittleurl" value="http://app.drtodolittle.de" />
+    <cm:property name="camunda-uri" value="http://localhost:8080" />
     </cm:default-properties>
     </cm:property-placeholder>
     <!-- get Firebase TokenService -->
@@ -62,13 +56,6 @@
       <bean class="de.drtodolittle.aggregate.ProcessInstanceVariables" id="processInstanceVariablesAggregationStrategy" />
     <bean class="de.drtodolittle.processor.ExtractUserFromFirebaseToken" id="extractuserfromtoken">
       <property name="service" ref="tokenService" />
-    </bean>
-    <bean class="de.drtodolittle.processor.ValidateBodyProcessor" id="extractemailandprocessid">
-      <argument>
-        <bean class="de.drtodolittle.processor.ExtractEmailAndProcessId" >
-          <property name="secret" value="${userregistrytokensecret}" />
-        </bean>
-      </argument>
     </bean>
     <bean class="de.drtodolittle.processor.ValidateBodyProcessor" id="extracttopic">
       <argument>
@@ -131,11 +118,6 @@
         <get uri="/{id}/undone">
           <to uri="direct:todoundone" />
         </get>
-      </rest>
-      <rest path="/hipchat" consumes="application/json" produces="application/json">
-        <post uri="/">
-          <to uri="direct:hipchat" />
-        </post>
       </rest>
       <route id="ping">
         <from uri="direct:ping" />
@@ -344,21 +326,6 @@
         <process ref="extractCreatedTaskId" />
         <removeHeaders pattern="*" />
       </route>
-      <route id="hipchat">
-        <from uri="direct:hipchat" />
-        <convertBodyTo type="java.lang.String"/>
-        <to uri="log:hipchat?showAll=true" />
-        <setBody>
-          <simple>
-            			{
-            				"color": "green",
-            				"message": "Hello, I'm Dr ToDo Little, what can I do for you? If you want to show your team todos send /drtodolittle list. If you want to create a new todo send /drtodolittle new topic",
-            				"notify": false,
-            				"message_format": "text"
-            			}
-            			</simple>
-          </setBody>
-        </route>
         <route id="deadletter">
           <from uri="direct:deadletter" />
           <to uri="log:deadletter?showAll=true" />

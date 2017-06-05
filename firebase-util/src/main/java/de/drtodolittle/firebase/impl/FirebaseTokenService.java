@@ -3,14 +3,14 @@
  */
 package de.drtodolittle.firebase.impl;
 
+import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.io.ByteArrayInputStream;
-import java.io.FileNotFoundException;
 
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseCredentials;
 import com.google.firebase.auth.FirebaseToken;
 import com.google.firebase.tasks.Task;
 
@@ -34,7 +34,7 @@ public class FirebaseTokenService implements TokenService {
 			privateKeyStream = new FileInputStream(servicePrivateKey);
 		}
 		FirebaseOptions options = new FirebaseOptions.Builder()
-				.setServiceAccount(privateKeyStream)
+				.setCredential(FirebaseCredentials.fromCertificate(privateKeyStream))
 				.setDatabaseUrl(databaseUrl)
 				.build();
 		FirebaseApp.initializeApp(options);

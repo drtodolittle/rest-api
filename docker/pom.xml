@@ -13,69 +13,12 @@
 	<dependencies>
 		<dependency>
 			<groupId>de.drtodolittle</groupId>
-			<artifactId>rest-api</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>de.drtodolittle</groupId>
-			<artifactId>firebase-util</artifactId>
+			<artifactId>drtodolittle-rest-dist</artifactId>
+			<type>tar.gz</type>
 		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
-			<plugin>
-				<groupId>org.apache.karaf.tooling</groupId>
-				<artifactId>karaf-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>features-add-to-repo</id>
-						<phase>package</phase>
-						<goals>
-							<goal>features-add-to-repository</goal>
-						</goals>
-						<configuration>
-							<descriptors>
-								<descriptor>mvn:org.apache.camel.karaf/apache-camel/${camel.version}/xml/features</descriptor>
-								<descriptor>mvn:org.apache.karaf.features/spring/${karaf.version}/xml/features</descriptor>
-								<descriptor>mvn:org.apache.karaf.features/enterprise/${karaf.version}/xml/features</descriptor>
-							</descriptors>
-							<features>
-								<feature>camel</feature>
-                <feature>camel-core</feature>
-								<feature>camel-blueprint</feature>
-								<feature>camel-servlet</feature>
-								<feature>camel-velocity</feature>
-								<feature>camel-groovy</feature>
-								<feature>camel-http4</feature>
-								<feature>camel-script</feature>
-								<feature>camel-mail</feature>
-								<feature>webconsole</feature>
-							</features>
-							<repository>${project.build.directory}/system</repository>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			      <plugin>
-			        <artifactId>maven-resources-plugin</artifactId>
-			        <executions>
-			          <execution>
-			            <id>copy-resources</id>
-			            <phase>package</phase>
-			            <goals>
-			              <goal>copy-resources</goal>
-			            </goals>
-			            <configuration>
-			              <outputDirectory>${project.build.directory}/resources</outputDirectory>
-			              <resources>
-			                <resource>
-			                  <directory>src/main/resources/</directory>
-			                  <filtering>true</filtering>
-			                </resource>
-			              </resources>
-			            </configuration>
-			          </execution>
-			        </executions>
-			      </plugin>
 			<plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
@@ -83,47 +26,66 @@
         <executions>
           <execution>
             <id>copy-dependencies</id>
-            <phase>package</phase>
+            <phase>initialize</phase>
             <goals>
-              <goal>copy-dependencies</goal>
+              <goal>unpack-dependencies</goal>
             </goals>
             <configuration>
-              <outputDirectory>${project.build.directory}/deploy</outputDirectory>
+              <outputDirectory>${project.build.directory}</outputDirectory>
               <overWriteReleases>false</overWriteReleases>
               <overWriteSnapshots>false</overWriteSnapshots>
               <overWriteIfNewer>true</overWriteIfNewer>
-							<excludeTransitive>false</excludeTransitive>
+							<excludeTransitive>true</excludeTransitive>
             </configuration>
           </execution>
         </executions>
       </plugin>
 			<plugin>
-            <groupId>com.spotify</groupId>
-            <artifactId>docker-maven-plugin</artifactId>
-            <configuration>
-              <imageName>drtodolittle-rest-api</imageName>
-              <baseImage>cloud57/karaf:4.1.1</baseImage>
-              <resources>
-                 <resource>
-                   <targetPath>/opt/karaf/deploy</targetPath>
-                   <directory>${project.build.directory}/deploy</directory>
-                 </resource>
-								 <resource>
-                   <targetPath>/opt/karaf/system</targetPath>
-                   <directory>${project.build.directory}/system</directory>
-                 </resource>
-								 <resource>
-                   <targetPath>/opt/karaf/etc</targetPath>
-                   <directory>${project.build.directory}/resources/etc</directory>
-                 </resource>
-              </resources>
-							<forceTags>true</forceTags>
-							<imageTags>
-           			<imageTag>${project.version}</imageTag>
-           			<imageTag>latest</imageTag>
-        			</imageTags>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-resources-plugin</artifactId>
+					<version>2.6</version>
+					<executions>
+							<execution>
+									<id>process-resources</id>
+									<phase>initialize</phase>
+									<goals>
+											<goal>resources</goal>
+									</goals>
+									<configuration>
+										<outputDirectory>${project.build.directory}/drtodolittle-rest-dist-1.0-SNAPSHOT/bin</outputDirectory>
+									</configuration>
+							</execution>
+					</executions>
+			</plugin>
+
+			<plugin>
+			  <groupId>com.spotify</groupId>
+			  <artifactId>dockerfile-maven-plugin</artifactId>
+			  <version>1.2.2</version>
+			  <executions>
+			    <execution>
+			      <id>default</id>
+			      <goals>
+			        <goal>build</goal>
+			      </goals>
+			    </execution>
+					<execution>
+						<id>tag</id>
+						<goals>
+							<goal>latest</goal>
+							<goal>${project.version}</goal>
+						</goals>
+						<configuration>
+              <repository>drtodolittle/rest-api</repository>
             </configuration>
-          </plugin>
+					</execution>
+					
+			  </executions>
+			  <configuration>
+					<repository>drtodolittle/rest-api</repository>
+			    <tag>${project.version}</tag>
+			  </configuration>
+			</plugin>
 		</plugins>
 	</build>
 </project>

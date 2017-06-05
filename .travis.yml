@@ -12,6 +12,9 @@ after_success:
 - docker tag $REPO:latest $REPO:$TAG
 - docker tag $REPO:latest $REPO:latest
 - docker push $REPO
+cache:
+  directories:
+    - $HOME/.m2/repository/
 env:
   global:
   - secure: rRnKcs5+Sh7YKOHbw4L8+G34qeU4PIerTSldM0OXhRvndQLG6uUNEU11RL6/W8qoQGh6X7xKFkHatHeP6boYxcfwZiIBji6gKY5w6mdQXH683t2EGn9V8U909fuq26MbgYLLHo7IZnVSKqOWQx7j7HI23k5rzVLKa/FvpynBFHLYOSIUEGgK6TAjW/12ustiZml6MJJUeJpuEclcfRpBjuaAQDcRXFUA3UQJWL/6tIyeqyLRhzIs/7R55CzAid4mCysR2YAlqz6FhM41lbxx8M9/3MFIZN6jZH2E1E3Bu+nCu6OZOCEH/ATug6gzffLIMsQbpS3lEuk0ccDpNbwwvNxQ6iFVjSHhovoXJFmR8CSE14INojp/toFTbbn12v+o10ledKDE9tBc2OBuPp0VX86wH3SiE2EotPTk/JRpW5KqvQYj+dI6qPLbwvDBBSxExPXTHGBApZT/HqtL6wVzeQPfInK6JpweETEDmMg4rO2VNjIxksaJYkr2V8zz2LJ/H+KnMhmOwyHqG8G+qzyVzVTBDZwifccfXN08r/mkV71Z6nx/i0Iz0QdmAbro+7njz1V9W35fX0agtPbxw1MYJoBWvOYpijpxLPCsJcn3qQaIpzsYh8XS4quyOorizEc2r0aTW21gIgyeMVLm17Hp76SLrlFilw4idenNNtkVRoI=

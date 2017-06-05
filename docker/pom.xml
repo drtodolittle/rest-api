@@ -69,17 +69,6 @@
 			        <goal>build</goal>
 			      </goals>
 			    </execution>
-					<execution>
-						<id>tag</id>
-						<goals>
-							<goal>latest</goal>
-							<goal>${project.version}</goal>
-						</goals>
-						<configuration>
-              <repository>drtodolittle/rest-api</repository>
-            </configuration>
-					</execution>
-					
 			  </executions>
 			  <configuration>
 					<repository>drtodolittle/rest-api</repository>

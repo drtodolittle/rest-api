@@ -19,7 +19,7 @@ RUN mkdir -p /opt/karaf/data /opt/karaf/data/log \
     && chmod 700 /opt/karaf/data \
     && chmod a+x /opt/karaf/bin/start-rest-api.sh
 
-EXPOSE 1099 8101 8181 4444
+EXPOSE 1099 8101 8181 44444
 
 USER $KARAF_USER
 

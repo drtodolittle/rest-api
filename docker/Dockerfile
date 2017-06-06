@@ -1,4 +1,4 @@
-FROM openjdk:latest
+FROM openjdk:jre-alpine
 
 ENV KARAF_USER karaf
 ENV KARAF_UID 8181

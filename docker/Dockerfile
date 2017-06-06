@@ -7,7 +7,7 @@ ENV KARAF_VERSION 4.1.1
 ENV JAVA_MIN_MEM 64m
 ENV JAVA_MAX_MEM 64m
 
-RUN groupadd -r $KARAF_USER --gid=$KARAF_UID && useradd -rm -g $KARAF_USER --uid=$KARAF_UID $KARAF_USER
+RUN addgroup -g $KARAF_UID -S $KARAF_USER && adduser -S -g $KARAF_USER -u $KARAF_UID $KARAF_USER
 
 ADD target/drtodolittle-rest-dist-1.0-SNAPSHOT /opt/karaf
 

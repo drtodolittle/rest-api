@@ -52,7 +52,7 @@
 											<goal>resources</goal>
 									</goals>
 									<configuration>
-										<outputDirectory>${project.build.directory}/drtodolittle-rest-dist-1.0-SNAPSHOT/bin</outputDirectory>
+										<outputDirectory>${project.build.directory}/drtodolittle-rest-dist-1.0-SNAPSHOT</outputDirectory>
 									</configuration>
 							</execution>
 					</executions>

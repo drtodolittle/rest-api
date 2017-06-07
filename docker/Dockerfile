@@ -11,8 +11,6 @@ RUN addgroup -g $KARAF_UID -S $KARAF_USER && adduser -S -g $KARAF_USER -u $KARAF
 
 ADD target/drtodolittle-rest-dist-1.0-SNAPSHOT /opt/karaf
 
-RUN sed -i 's/log4j\.rootLogger=INFO,\ out,\ osgi\:\*/log4j\.rootLogger=INFO,\ out,\ stdout,\ osgi\:\*/' /opt/karaf/etc/org.ops4j.pax.logging.cfg
-
 # Prepare data directory
 RUN mkdir -p /opt/karaf/data /opt/karaf/data/log \
     && chown -R $KARAF_USER.$KARAF_USER /opt/karaf \

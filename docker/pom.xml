@@ -47,12 +47,13 @@
 					<executions>
 							<execution>
 									<id>process-resources</id>
-									<phase>initialize</phase>
+									<phase>test</phase>
 									<goals>
 											<goal>resources</goal>
 									</goals>
 									<configuration>
 										<outputDirectory>${project.build.directory}/drtodolittle-rest-dist-1.0-SNAPSHOT</outputDirectory>
+										<overwrite>true</overwrite>
 									</configuration>
 							</execution>
 					</executions>

@@ -2,7 +2,7 @@ FROM openjdk:jre-alpine
 
 ENV KARAF_USER karaf
 ENV KARAF_UID 8181
-ENV JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64
+ENV JAVA_HOME /usr/lib/jvm/default-jvm
 ENV KARAF_VERSION 4.1.1
 ENV JAVA_MIN_MEM 64m
 ENV JAVA_MAX_MEM 64m

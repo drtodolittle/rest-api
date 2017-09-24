@@ -14,13 +14,15 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <karaf.version>4.1.1</karaf.version>
-    <camel.version>2.19.0</camel.version>
+    <camel.version>2.19.2</camel.version>
+    <spring.boot.version>1.5.6.RELEASE</spring.boot.version>
     <google.client.version>1.22.0</google.client.version>
   </properties>
 <modules>
   <module>wrapper</module>
   <module>firebase-util</module>
   <module>api</module>
+  <module>spring-boot</module>
   <module>kar</module>
   <module>drtodolittle-rest-dist</module>
   <module>docker</module>
@@ -41,9 +43,24 @@
     </dependency>
     <dependency>
       <groupId>org.apache.camel</groupId>
+      <artifactId>camel-http4-starter</artifactId>
+      <version>${camel.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.camel</groupId>
       <artifactId>camel-velocity</artifactId>
       <version>${camel.version}</version>
       <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.camel</groupId>
+      <artifactId>camel-velocity-starter</artifactId>
+      <version>${camel.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.camel</groupId>
+      <artifactId>camel-groovy-starter</artifactId>
+      <version>${camel.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.camel</groupId>
@@ -51,6 +68,22 @@
       <version>${camel.version}</version>
       <scope>provided</scope>
     </dependency>
+    <dependency>
+      <groupId>org.apache.camel</groupId>
+      <artifactId>camel-servlet-starter</artifactId>
+      <version>${camel.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.camel</groupId>
+      <artifactId>camel-jackson-starter</artifactId>
+      <version>${camel.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.camel</groupId>
+      <artifactId>camel-swagger-java-starter</artifactId>
+      <version>${camel.version}</version>
+    </dependency>
+
     <dependency>
       <groupId>org.apache.camel</groupId>
       <artifactId>camel-hipchat</artifactId>

@@ -1,0 +1,7 @@
+<rests xmlns="http://camel.apache.org/schema/spring">
+      <rest path="/ping">
+        <get uri="/" >
+          <to uri="direct:ping" />
+        </get>
+      </rest>
+</rests>

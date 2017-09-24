@@ -1,0 +1,204 @@
+<routes xmlns="http://camel.apache.org/schema/spring">
+
+      <route id="gettodo">
+        <from uri="direct:gettodo" />
+        <process ref="extractuserfromtoken" />
+				<to uri="velocity:templates/gettask.vm" />
+      </route>
+      <route id="updatetodo">
+        <from uri="direct:updatetodo" />
+				<process ref="extractuserfromtoken" />
+        <process ref="extracttopic" />
+        <to uri="direct:extracttaskid" />
+        <setHeader headerName="Exchange.HTTP_URI">
+          <constant>{{camunda-uri}}</constant>
+        </setHeader>
+        <setHeader headerName="Exchange.HTTP_PATH">
+          <simple>/engine-rest/task/${header.taskid}/variables/topic</simple>
+        </setHeader>
+        <setHeader headerName="CamelHttpMethod">
+          <constant>PUT</constant>
+        </setHeader>
+        <setHeader headerName="Exchange.CONTENT_TYPE">
+          <constant>application/json</constant>
+        </setHeader>
+        <setBody>
+          <simple>${header.updatetopic}</simple>
+        </setBody>
+        <to uri="http4://setFromHeader" />
+        <to uri="direct:noanswer" />
+      </route>
+      <route id="gettodos">
+        <from uri="direct:gettodos" />
+        <choice>
+          <when>
+            <groovy>request.headers.Accept != null &amp;&amp; (request.headers.Accept.contains('application/json') || request.headers.Accept.contains('application/javascript') || request.headers.Accept.contains('text/javascript'))</groovy>
+            <process ref="extractuserfromtoken" />
+            <setHeader headerName="Exchange.HTTP_URI">
+              <constant>{{camunda-uri}}</constant>
+            </setHeader>
+            <setHeader headerName="Exchange.HTTP_PATH">
+              <constant>/engine-rest/task</constant>
+            </setHeader>
+            <setHeader headerName="Exchange.HTTP_QUERY">
+              <simple>processInstanceBusinessKey=${header.username}&amp;sortBy=created&amp;sortOrder=asc</simple>
+            </setHeader>
+            <to uri="http4://setFromHeader" />
+            <process ref="extractProcessIdsProcessor" />
+            <split strategyRef="processInstanceVariablesAggregationStrategy">
+              <simple>${header.processIds}</simple>
+              <to uri="direct:gettodovariables" />
+            </split>
+            <setBody>
+              <simple>[${body}]</simple>
+            </setBody>
+            <removeHeaders pattern="*" />
+          </when>
+          <otherwise>
+            <removeHeaders pattern="*" />
+            <setHeader headerName="Exchange.HTTP_RESPONSE_CODE">
+              <constant>406</constant>
+            </setHeader>
+          </otherwise>
+        </choice>
+      </route>
+      <route id="gettodovariables">
+        <from uri="direct:gettodovariables" />
+        <setHeader headerName="Exchange.HTTP_PATH">
+          <constant>/engine-rest/variable-instance</constant>
+        </setHeader>
+				<setHeader headerName="processInstanceIdIn">
+          <groovy>
+            <![CDATA[
+              return request.headers.processIds[exchange.properties.CamelSplitIndex]
+            ]]>
+          </groovy>
+        </setHeader>
+        <setHeader headerName="Exchange.HTTP_QUERY">
+          <groovy>
+            <![CDATA[
+	            processInstanceIdIn=request.headers.processInstanceIdIn
+	            return "processInstanceIdIn=$processInstanceIdIn"
+            ]]>
+          </groovy>
+        </setHeader>
+				<removeHeader headerName="processIds"/>
+        <to uri="http4://setFromHeader" />
+        <process ref="generateToDoJSONProcessor" />
+      </route>
+      <route id="noanswer">
+        <from uri="direct:noanswer" />
+        <removeHeaders pattern="*" />
+        <setHeader headerName="Exchange.HTTP_RESPONSE_CODE">
+          <constant>204</constant>
+        </setHeader>
+      </route>
+      <route id="extracttaskid">
+        <from uri="direct:extracttaskid" />
+        <setHeader headerName="Exchange.HTTP_URI">
+          <constant>{{camunda-uri}}</constant>
+        </setHeader>
+        <setHeader headerName="Exchange.HTTP_PATH">
+          <simple>/engine-rest/task</simple>
+        </setHeader>
+        <setHeader headerName="Exchange.HTTP_QUERY">
+          <simple>processInstanceId=${header.id}</simple>
+        </setHeader>
+        <setHeader headerName="CamelHttpMethod">
+          <constant>GET</constant>
+        </setHeader>
+        <to uri="http4://setFromHeader" />
+        <process ref="extractTaskIdProcessor" />
+      </route>
+      <route id="deletetodo">
+        <from uri="direct:deletetodo" />
+        <process ref="extractuserfromtoken" />
+				<to uri="direct:extracttaskid" />
+        <setHeader headerName="Exchange.HTTP_URI">
+          <constant>{{camunda-uri}}</constant>
+        </setHeader>
+        <setHeader headerName="Exchange.HTTP_PATH">
+          <simple>/engine-rest/task/${header.taskid}/complete</simple>
+        </setHeader>
+        <setHeader headerName="CamelHttpMethod">
+          <constant>POST</constant>
+        </setHeader>
+        <setHeader headerName="Exchange.CONTENT_TYPE">
+          <constant>application/json</constant>
+        </setHeader>
+        <setBody>
+          <constant>{"variables": {"delete": {"value" : true}}}</constant>
+        </setBody>
+        <to uri="http4://setFromHeader" />
+        <to uri="direct:noanswer" />
+      </route>
+			<route id="deletealltodos">
+				<from uri="direct:deletealltodos" />
+				<process ref="extractuserfromtoken" />
+
+			</route>
+      <route id="tododone">
+        <from uri="direct:tododone" />
+        <process ref="extractuserfromtoken" />
+				<to uri="direct:extracttaskid" />
+        <setHeader headerName="Exchange.HTTP_URI">
+          <constant>{{camunda-uri}}</constant>
+        </setHeader>
+        <setHeader headerName="Exchange.HTTP_PATH">
+          <simple>/engine-rest/task/${header.taskid}/complete</simple>
+        </setHeader>
+        <setHeader headerName="CamelHttpMethod">
+          <constant>POST</constant>
+        </setHeader>
+        <setHeader headerName="Exchange.CONTENT_TYPE">
+          <constant>application/json</constant>
+        </setHeader>
+        <setBody>
+          <constant>{"variables": {"done": {"value" : true}}}</constant>
+        </setBody>
+        <to uri="http4://setFromHeader" />
+        <to uri="direct:noanswer" />
+      </route>
+      <route id="todoundone">
+        <from uri="direct:todoundone" />
+        <process ref="extractuserfromtoken" />
+				<to uri="direct:extracttaskid" />
+        <setHeader headerName="Exchange.HTTP_URI">
+          <constant>{{camunda-uri}}</constant>
+        </setHeader>
+        <setHeader headerName="Exchange.HTTP_PATH">
+          <simple>/engine-rest/task/${header.taskid}/complete</simple>
+        </setHeader>
+        <setHeader headerName="CamelHttpMethod">
+          <constant>POST</constant>
+        </setHeader>
+        <setHeader headerName="Exchange.CONTENT_TYPE">
+          <constant>application/json</constant>
+        </setHeader>
+        <setBody>
+          <constant>{"variables": {"done": {"value" : false}}}</constant>
+        </setBody>
+        <to uri="http4://setFromHeader" />
+        <to uri="direct:noanswer" />
+      </route>
+      <route id="createtodo">
+        <from uri="direct:createtodo" />
+        <process ref="extractuserfromtoken" />
+        <process ref="generateCreateProcessJSONProcessor" />
+        <setHeader headerName="Exchange.HTTP_URI">
+          <constant>{{camunda-uri}}</constant>
+        </setHeader>
+        <setHeader headerName="Exchange.HTTP_PATH">
+          <constant>/engine-rest/process-definition/key/DrToDoLittle/start</constant>
+        </setHeader>
+        <setHeader headerName="CamelHttpMethod">
+          <constant>POST</constant>
+        </setHeader>
+        <setHeader headerName="Exchange.CONTENT_TYPE">
+          <constant>application/json</constant>
+        </setHeader>
+        <to uri="http4://setFromHeader" />
+        <process ref="extractCreatedTaskId" />
+        <removeHeaders pattern="*" />
+      </route>
+</routes>

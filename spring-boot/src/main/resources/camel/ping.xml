@@ -1,0 +1,8 @@
+<routes xmlns="http://camel.apache.org/schema/spring">
+      <route id="ping">
+        <from uri="direct:ping" />
+        <transform>
+          <constant>Hello, I'm Dr ToDo Little!</constant>
+        </transform>
+      </route>
+</routes>

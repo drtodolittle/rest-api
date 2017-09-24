@@ -7,11 +7,12 @@ services:
 after_success:
 - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
 - export REPO=drtodolittle/rest-api
-- export TAG=1.0.6
 - docker build -f docker/Dockerfile -t $REPO:latest docker
-- docker tag $REPO:latest $REPO:$TAG
-- docker tag $REPO:latest $REPO:latest
 - docker push $REPO
+- export REPOSPRING=drtodolittle/rest-api-spring-boot
+- docker build -f spring-boot/Dockerfile -t $REPOSPRING:test docker
+- docker push $REPOSPRING
+
 cache:
   directories:
     - $HOME/.m2/repository/

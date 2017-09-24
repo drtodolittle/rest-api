@@ -1,0 +1,28 @@
+<rests xmlns="http://camel.apache.org/schema/spring">
+      <rest path="/todos" consumes="application/json" produces="application/json">
+        <get uri="/">
+          <to uri="direct:gettodos" />
+        </get>
+        <post uri="/">
+          <to uri="direct:createtodo" />
+        </post>
+        <get uri="/{id}">
+          <to uri="direct:gettodo" />
+        </get>
+        <delete uri="/{id}">
+          <to uri="direct:deletetodo" />
+        </delete>
+				<delete uri="/">
+          <to uri="direct:deletealltodos" />
+        </delete>
+        <put uri="/{id}">
+          <to uri="direct:updatetodo" />
+        </put>
+        <get uri="/{id}/done">
+          <to uri="direct:tododone" />
+        </get>
+        <get uri="/{id}/undone">
+          <to uri="direct:todoundone" />
+        </get>
+      </rest>
+</rests>
